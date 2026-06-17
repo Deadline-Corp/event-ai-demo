@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>EVENT AI — личный AI event-менеджер</title>
+<meta name="description" content="AI собирает мероприятие под ключ: подбор, смета, сценарий, тайминг и бронь." />
+<meta name="theme-color" content="#04060B" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="EVENT AI" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css?v=4" />
+</head>
+<body>
+
+<!-- ambient background layers -->
+<div class="bg" aria-hidden="true">
+  <div class="bg-aurora"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- SVG icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L12 16.77l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85z" fill="currentColor"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.33-8.5C1.1 8.4 2.5 5.5 5.5 5.5c1.8 0 3 1 3.5 2 0 0 1-2 3.5-2 3 0 4.4 2.9 2.83 6C19 15.65 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a1.5 1.5 0 001.47 1.2h7.66a1.5 1.5 0 001.47-1.16L20 8H6.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v4h4M8.5 13h7M8.5 16.5h7M8.5 9.5h2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 9h16M4 14h16M10 4v16" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-pres" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 20l4-4 4 4M12 16v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6z" fill="currentColor"/><path d="M19 4l.7 2.3L22 7l-2.3.7L19 10l-.7-2.3L16 7l2.3-.7z" fill="currentColor" opacity=".7"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="currentColor"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.5-6.5-10.5A6.5 6.5 0 0112 4a6.5 6.5 0 016.5 6.5C18.5 15.5 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10.5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 19a5.5 5.5 0 0111 0M16 5.2a3.2 3.2 0 010 6M17.5 19a5.5 5.5 0 00-2.5-4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 10h17M16 13.5h2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- welcome / demo gate -->
+<div class="welcome" id="welcome" role="dialog" aria-label="EVENT AI — демо">
+  <div class="wl-col">
+    <div class="brandmark wl-mark" id="welcomeMark" aria-hidden="true"></div>
+    <div class="wl-badge"><span class="island-dot"></span>ДЕМО-ВЕРСИЯ · ПРОТОТИП</div>
+    <h1 class="wl-title">
+      <span class="wl-line"><span class="wl-inner" style="--i:0">Ваш личный</span></span>
+      <span class="wl-line"><span class="wl-inner" style="--i:1"><span class="accent">AI</span> event-менеджер</span></span>
+    </h1>
+    <p class="wl-sub">Опишите событие — искусственный интеллект соберёт его под ключ: подбор, смета, сценарий и бронь. Это демо — пройдите весь путь сами, без регистрации.</p>
+    <div class="wl-manifest" id="wlManifest">
+      <div class="lrow"><span class="lk">подрядчики Алматы</span><span class="lead"></span><span class="val" data-count="1240">0</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk">категории</span><span class="lead"></span><span class="val">9</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk">AI-сценарии</span><span class="lead"></span><span class="val">готовы</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk">система</span><span class="lead"></span><span class="val">онлайн</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+    </div>
+    <button class="btn btn-primary wl-cta" id="enterBtn">
+      <span class="wl-cta-main">Запустить демо <svg class="ic"><use href="#i-arrow"/></svg></span>
+      <span class="wl-cta-sub">свободный режим · без регистрации</span>
+    </button>
+    <div class="wl-meta">EVENT AI · Алматы · KZ / RU · DEADLINE</div>
+  </div>
+</div>
+
+<main class="stage">
+  <!-- device frame -->
+  <div class="phone" id="phone">
+    <div class="phone-glare" aria-hidden="true"></div>
+    <div class="screen" id="screen">
+      <!-- status bar -->
+      <div class="statusbar">
+        <span class="sb-time" id="sbTime">21:04</span>
+        <span class="island" id="island"><span class="island-dot"></span><span id="islandText">EVENT AI</span></span>
+        <span class="sb-icons"><i class="sb-sig"></i><i class="sb-bat"></i></span>
+      </div>
+      <!-- app header -->
+      <header class="appbar" id="appbar" hidden>
+        <button class="iconbtn" id="backBtn" aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button>
+        <div class="appbar-title"><span id="appbarTitle">EVENT AI</span></div>
+        <div class="demo-chip" aria-label="демо-версия">ДЕМО</div>
+      </header>
+      <!-- view container -->
+      <div class="views" id="views"></div>
+      <!-- bottom action bar -->
+      <div class="actionbar" id="actionbar" hidden></div>
+      <div class="homebar" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- desktop ambient caption line -->
+  <p class="stage-note">EVENT AI · интерактивное демо · DEADLINE</p>
+</main>
+
+<script src="js/data.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
+</body>
+</html>
