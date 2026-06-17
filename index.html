@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/styles.css?v=4" />
+<link rel="stylesheet" href="css/styles.css?v=6" />
 </head>
 <body>
 
@@ -48,11 +48,18 @@
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9l1-4h14l1 4M5 9h14v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1zM4 9h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
 <!-- welcome / demo gate -->
 <div class="welcome" id="welcome" role="dialog" aria-label="EVENT AI — демо">
+  <div class="wl-lang" id="wlLang">
+    <button data-l="ru" class="on">RU</button><button data-l="kz">KZ</button>
+  </div>
   <div class="wl-col">
     <div class="brandmark wl-mark" id="welcomeMark" aria-hidden="true"></div>
     <div class="wl-badge"><span class="island-dot"></span>ДЕМО-ВЕРСИЯ · ПРОТОТИП</div>
@@ -68,9 +75,10 @@
       <div class="lrow"><span class="lk">система</span><span class="lead"></span><span class="val">онлайн</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
     </div>
     <button class="btn btn-primary wl-cta" id="enterBtn">
-      <span class="wl-cta-main">Запустить демо <svg class="ic"><use href="#i-arrow"/></svg></span>
+      <span class="wl-cta-main" data-i18n="cta">Запустить демо <svg class="ic"><use href="#i-arrow"/></svg></span>
       <span class="wl-cta-sub">свободный режим · без регистрации</span>
     </button>
+    <button class="wl-auto" id="autoBtn"><svg class="ic"><use href="#i-play"/></svg> Авто-демо · показ без рук</button>
     <div class="wl-meta">EVENT AI · Алматы · KZ / RU · DEADLINE</div>
   </div>
 </div>
@@ -104,7 +112,7 @@
   <p class="stage-note">EVENT AI · интерактивное демо · DEADLINE</p>
 </main>
 
-<script src="js/data.js?v=4"></script>
-<script src="js/app.js?v=4"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>
