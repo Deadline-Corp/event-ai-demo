@@ -392,18 +392,21 @@ async function startMatching() {
    ============================================================ */
 VIEWS.results = () => {
   const sc = S.scenario;
+  S.favorites = S.favorites || new Set();
   const cards = sc.vendors.map((v, i) => {
     const added = !S.removed.has(i);
+    const fav = S.favorites.has(i);
     const rh = v.reasonFull.replace(v.matchToken, `<b>${v.matchToken}</b>`);
     return `<div class="cat-label">${icon(v.icon)} ${v.cat}</div>
-      <div class="vcard" style="animation-delay:${i * 70}ms">
+      <div class="vcard" data-i="${i}" style="animation-delay:${i * 70}ms">
         <div class="media"><img src="${IMG(v.seed)}" alt="${v.title}" loading="lazy"/>
           <span class="badge"><span class="dot"></span>свободно ${sc.date}</span>
-          <span class="rate">${icon('i-star')} ${v.rating}</span>
+          <button class="fav ${fav ? 'on' : ''}" data-fav="${i}" aria-label="В избранное">${icon('i-heart')}</button>
+          <span class="more-chip">Подробнее ${icon('i-arrow')}</span>
         </div>
         <div class="vbody">
           <div class="vtitle">${v.title}</div>
-          <div class="vmeta">${v.meta}</div>
+          <div class="vmeta">${v.meta} · ${icon('i-star')} ${v.rating}</div>
           <div class="reason">
             <div class="reason-ic">${icon('i-spark')}</div>
             <div class="reason-b"><span class="why">Почему AI выбрал</span><p>${rh}</p>
@@ -437,16 +440,100 @@ VIEWS.results = () => {
         if (im.complete && im.naturalWidth) done(); else { im.addEventListener('load', done); im.addEventListener('error', done); }
       });
       updateCartCount();
-      el.querySelectorAll('.addbtn').forEach(b => b.addEventListener('click', () => {
+      el.querySelectorAll('.addbtn').forEach(b => b.addEventListener('click', (e) => {
+        e.stopPropagation();
         const i = +b.dataset.i;
         if (S.removed.has(i)) { S.removed.delete(i); b.classList.add('added'); b.innerHTML = icon('i-check') + 'В корзине'; }
         else { S.removed.add(i); b.classList.remove('added'); b.innerHTML = icon('i-plus') + 'В корзину'; }
         updateCartCount();
       }));
+      el.querySelectorAll('.fav').forEach(b => b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const i = +b.dataset.fav;
+        if (S.favorites.has(i)) { S.favorites.delete(i); b.classList.remove('on'); }
+        else { S.favorites.add(i); b.classList.add('on'); burst(b); }
+      }));
+      el.querySelectorAll('.vcard').forEach(c => c.addEventListener('click', (e) => {
+        if (e.target.closest('.addbtn') || e.target.closest('.fav')) return;
+        openVendor(+c.dataset.i);
+      }));
       $('#toCart').addEventListener('click', () => navigate('cart'));
     },
   };
 };
+function burst(el) {
+  const r = el.getBoundingClientRect(), sr = $('#screen').getBoundingClientRect();
+  const cx = r.left - sr.left + r.width / 2, cy = r.top - sr.top + r.height / 2;
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement('span'); p.className = 'fav-particle';
+    const a = (i / 6) * Math.PI * 2, dx = Math.cos(a) * 22, dy = Math.sin(a) * 22;
+    p.style.left = cx + 'px'; p.style.top = cy + 'px';
+    p.style.setProperty('--dx', dx + 'px'); p.style.setProperty('--dy', dy + 'px');
+    $('#screen').appendChild(p); setTimeout(() => p.remove(), 600);
+  }
+}
+
+/* ---------- vendor detail sheet ---------- */
+function miniCalendar(v, i) {
+  const parts = S.scenario.date.split(' ');
+  const day = parseInt(parts[0], 10) || 15;
+  const month = parts[1] || 'август';
+  let cells = '';
+  const pad = (i + 2) % 7;
+  for (let p = 0; p < pad; p++) cells += `<i class="cal-pad"></i>`;
+  for (let d = 1; d <= 30; d++) {
+    const busy = ((d * 7 + i * 3) % 5 === 0) && d !== day;
+    const sel = d === day;
+    cells += `<i class="${sel ? 'cal-sel' : busy ? 'cal-busy' : 'cal-free'}">${d}</i>`;
+  }
+  return `<div class="cal">
+    <div class="cal-grid"><i class="cal-wd">пн</i><i class="cal-wd">вт</i><i class="cal-wd">ср</i><i class="cal-wd">чт</i><i class="cal-wd">пт</i><i class="cal-wd">сб</i><i class="cal-wd">вс</i>${cells}</div>
+    <div class="cal-legend"><span><i class="lg free"></i> свободно</span><span><i class="lg busy"></i> занято</span><span><i class="lg sel"></i> ${month}, ваша дата</span></div></div>`;
+}
+function openVendor(i) {
+  const v = S.scenario.vendors[i]; if (!v) return;
+  const gal = galleryFor(v.seed), revs = reviewsFor(i), alts = altsFor(v.cat);
+  const added = !S.removed.has(i); S.favorites = S.favorites || new Set();
+  const fav = S.favorites.has(i);
+  const ov = document.createElement('div'); ov.className = 'sheet-ov vsheet';
+  ov.innerHTML = `<div class="sheet sheet-tall">
+      <div class="sheet-grab"></div>
+      <div class="vd-scroll">
+        <div class="vd-gallery">${gal.map((g) => `<div class="vd-slide"><img src="${g}" alt=""/></div>`).join('')}</div>
+        <div class="vd-dots">${gal.map((_, gi) => `<i class="${gi === 0 ? 'on' : ''}"></i>`).join('')}</div>
+        <div class="vd-head">
+          <div><div class="vd-cat">${icon(v.icon)} ${v.cat}</div><div class="vd-title">${v.title}</div><div class="vd-meta">${v.meta}</div></div>
+          <div class="vd-rate">${icon('i-star')} ${v.rating}</div>
+        </div>
+        <div class="vd-socials"><span class="soc">Instagram</span><span class="soc">YouTube</span><span class="soc">WhatsApp</span><span class="soc">${icon('i-map')} карта</span></div>
+        <div class="reason" style="margin-top:4px"><div class="reason-ic">${icon('i-spark')}</div><div class="reason-b"><span class="why">Почему AI выбрал</span><p>${v.reasonFull.replace(v.matchToken, `<b>${v.matchToken}</b>`)}</p></div></div>
+        <div class="vd-sec-h">Свободные даты</div>
+        ${miniCalendar(v, i)}
+        <div class="vd-sec-h">Отзывы</div>
+        <div class="vd-reviews">${revs.map((r) => `<div class="vd-rev"><div class="vd-rev-top"><b>${r.n}</b><span class="vd-stars">${'★'.repeat(r.r)}</span></div><p>${r.t}</p></div>`).join('')}</div>
+        ${alts.length ? `<div class="vd-sec-h">${icon('i-spark')} AI: другие варианты в категории</div>
+        <div class="vd-alts">${alts.map((a, ai) => `<button class="vd-alt" data-alt="${ai}"><div class="vd-alt-l"><div class="vd-alt-t">${a.title}</div><div class="vd-alt-n">${a.note}</div></div><span class="vd-alt-r">${icon('i-star')} ${a.rating}</span><span class="vd-alt-swap">Заменить</span></button>`).join('')}</div>` : ''}
+      </div>
+      <div class="vd-actions">
+        <button class="vd-fav ${fav ? 'on' : ''}" aria-label="В избранное">${icon('i-heart')}</button>
+        <button class="btn btn-primary vd-add">${added ? icon('i-check') + ' В корзине' : icon('i-plus') + ' Добавить в проект'}</button>
+      </div>
+    </div>`;
+  $('#screen').appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add('show'));
+  const close = () => { ov.classList.remove('show'); setTimeout(() => ov.remove(), 340); };
+  ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+  const g = ov.querySelector('.vd-gallery'), dots = [...ov.querySelectorAll('.vd-dots i')];
+  g.addEventListener('scroll', () => { const idx = Math.round(g.scrollLeft / g.clientWidth); dots.forEach((d, di) => d.classList.toggle('on', di === idx)); });
+  ov.querySelectorAll('.soc').forEach((s) => s.addEventListener('click', () => toast('Откроется профиль подрядчика')));
+  ov.querySelectorAll('.vd-alt').forEach((b) => b.addEventListener('click', () => { toast('AI заменил вариант — смета пересчитана'); close(); }));
+  ov.querySelector('.vd-fav').addEventListener('click', (e) => {
+    const b = e.currentTarget;
+    if (S.favorites.has(i)) { S.favorites.delete(i); b.classList.remove('on'); }
+    else { S.favorites.add(i); b.classList.add('on'); burst(b); }
+  });
+  ov.querySelector('.vd-add').addEventListener('click', () => { S.removed.delete(i); updateCartCount(); toast('Добавлено в проект'); close(); });
+}
 function activeCart() { return S.scenario.vendors.map((v, i) => i).filter(i => !S.removed.has(i)); }
 function cartTotal() { return activeCart().reduce((s, i) => s + num(S.scenario.vendors[i].price), 0); }
 function updateCartCount() {
@@ -764,18 +851,47 @@ function confirmBooking() {
   }, 60);
 }
 function openSupplier() {
+  const reqs = [
+    { n: 'Свадьба · 180 гостей', d: '15 августа', s: 'новая' },
+    { n: 'Юбилей · 60 гостей', d: '20 сентября', s: 'новая' },
+    { n: 'Корпоратив · 80 гостей', d: '12 декабря', s: 'просмотр' },
+  ];
   const ov = document.createElement('div'); ov.className = 'sheet-ov';
-  ov.innerHTML = `<div class="sheet">
+  ov.innerHTML = `<div class="sheet sheet-tall light">
       <div class="sheet-grab"></div>
-      <div class="sheet-h"><div><div class="sheet-t">${SUPPLIER.title}</div><div class="sheet-r">${SUPPLIER.role}</div></div><span class="sheet-badge">Бизнес-аккаунт</span></div>
-      <div class="sup-rows">${SUPPLIER.rows.map((r) => `<div class="sup-row"><span>${r.k}</span><b class="${r.hot ? 'hot' : ''}">${r.v}</b></div>`).join('')}</div>
-      <p class="sheet-note">Так подрядчик видит входящие заявки, загрузку календаря и выплаты. Клиент и подрядчик — в одной системе: это и есть двусторонний маркетплейс.</p>
-      <button class="btn btn-ghost" id="sheetClose">Закрыть</button>
+      <div class="vd-scroll">
+        <div class="biz-top">
+          <div class="biz-id"><div class="biz-av">${icon('i-users')}</div><div><div class="biz-name">${SUPPLIER.title}</div><div class="biz-role">${SUPPLIER.role}</div></div></div>
+          <span class="biz-status">● опубликован</span>
+        </div>
+        <div class="biz-stats">
+          <div class="biz-stat"><div class="bv">12</div><div class="bk">заявок</div></div>
+          <div class="biz-stat"><div class="bv">1 248</div><div class="bk">просмотров</div></div>
+          <div class="biz-stat"><div class="bv">78%</div><div class="bk">загрузка</div></div>
+        </div>
+        <div class="biz-h">Календарь занятости</div>
+        ${miniCalendar({ title: SUPPLIER.title }, 3)}
+        <div class="biz-h">Новые заявки <span class="biz-badge">2 новые</span></div>
+        <div class="biz-reqs">${reqs.map((r, ri) => `<div class="biz-req" data-r="${ri}">
+            <div class="biz-req-l"><div class="biz-req-n">${r.n}</div><div class="biz-req-d">${icon('i-calendar')} ${r.d}</div></div>
+            <div class="biz-req-act"><button class="rq-ok" data-r="${ri}">Принять</button><button class="rq-no" data-r="${ri}">✕</button></div>
+          </div>`).join('')}</div>
+        <div class="biz-h">Финансы</div>
+        <div class="biz-fin">
+          <div class="biz-fin-row"><span>Подтверждённые брони</span><b>9 событий</b></div>
+          <div class="biz-fin-row"><span>К выплате после события</span><b>3 150 000 ₸</b></div>
+          <div class="biz-fin-row"><span>Комиссия платформы</span><b>7%</b></div>
+        </div>
+        <p class="biz-note">Это <b>светлый кабинет подрядчика</b> — вторая визуальная система EVENT AI. Клиент и подрядчик работают в одной платформе: это и есть двусторонний маркетплейс.</p>
+      </div>
+      <div class="vd-actions"><button class="btn btn-primary" id="sheetClose">Понятно</button></div>
     </div>`;
   $('#screen').appendChild(ov);
   requestAnimationFrame(() => ov.classList.add('show'));
   const close = () => { ov.classList.remove('show'); setTimeout(() => ov.remove(), 320); };
   ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+  ov.querySelectorAll('.rq-ok').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); const row = b.closest('.biz-req'); row.classList.add('accepted'); row.querySelector('.biz-req-act').innerHTML = '<span class="rq-done">✓ принято</span>'; toast('Заявка принята · дата закреплена'); }));
+  ov.querySelectorAll('.rq-no').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); b.closest('.biz-req').style.display = 'none'; }));
   ov.querySelector('#sheetClose').addEventListener('click', close);
 }
 
@@ -784,7 +900,7 @@ function openSupplier() {
    ============================================================ */
 function resetDemo() {
   S.scenario = null; S.answers = {}; S.cart = []; S.tier = 'PREMIUM';
-  S.styleVariant = 'Микс'; S.stack = []; S.removed = new Set(); S.intakeDone = false;
+  S.styleVariant = 'Микс'; S.stack = []; S.removed = new Set(); S.intakeDone = false; S.favorites = new Set();
   showWelcome();
 }
 

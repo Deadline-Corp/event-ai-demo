@@ -9,6 +9,38 @@ const IMGMAP = {
 };
 const IMG = (seed) => `assets/img/${IMGMAP[seed] || 'hall'}.jpg`;
 
+/* per-vendor mini-gallery (reuse generated images) */
+const GAL = {
+  hall: ['hall', 'decor', 'show'], 'host-m': ['host-m', 'artist', 'show'], show: ['show', 'artist', 'decor'],
+  artist: ['artist', 'show', 'tech'], photo: ['photo', 'decor', 'hall'], decor: ['decor', 'hall', 'show'],
+  tech: ['tech', 'show', 'artist'], loft: ['loft', 'catering', 'tech'], catering: ['catering', 'loft', 'decor'], 'host-f': ['host-f', 'loft', 'tech'],
+};
+const galleryFor = (seed) => (GAL[seed] || [seed]).map((s) => IMG(s));
+
+/* review pool (rotated per vendor) */
+const REVIEWS = [
+  { n: 'Динара А.', r: 5, t: 'Всё прошло идеально, гости в восторге. Рекомендую!' },
+  { n: 'Ержан К.', r: 5, t: 'Профессионалы. Приехали вовремя, отработали на высоте.' },
+  { n: 'Айгерим С.', r: 4, t: 'Очень понравилось, небольшие правки по таймингу — но в целомтоп.' },
+  { n: 'Нурлан Т.', r: 5, t: 'Сделали наш той незабываемым. Спасибо команде EVENT AI!' },
+  { n: 'Мадина Ж.', r: 5, t: 'Лучшие в Алматы. Уже советую друзьям.' },
+];
+const reviewsFor = (i) => [REVIEWS[i % REVIEWS.length], REVIEWS[(i + 2) % REVIEWS.length]];
+
+/* alternatives per category (for «Заменить») */
+const ALTS = {
+  'Площадка': [{ title: 'Ресторан «Алтын Орда»', rating: '4.7', note: 'до 220 гостей · +8% к бюджету' }, { title: 'Лофт «Барный №5»', rating: '4.6', note: 'до 120 гостей · −15% к бюджету' }],
+  'Ресторан': [{ title: 'Ресторан «Достар»', rating: '4.7', note: 'до 90 гостей · −10%' }, { title: 'Veranda Grill', rating: '4.8', note: 'летняя терраса · +5%' }],
+  'Ведущий': [{ title: 'Айбек Нұрлан', rating: '4.7', note: 'каз/рус · моложе аудитория' }, { title: 'Тамада Серик', rating: '4.8', note: 'нац. той · 8 часов' }],
+  'Артист': [{ title: 'Группа «Алматы»', rating: '4.8', note: 'кавер-бэнд · 2 сета' }, { title: 'DJ Renat', rating: '4.7', note: 'танцпол · −40%' }],
+  'Шоу-программа': [{ title: 'Шоу-балет «Tomiris»', rating: '4.8', note: '4 выхода · нац.' }, { title: 'Cirque show', rating: '4.7', note: 'воздушка · +20%' }],
+  'Фото / видео': [{ title: 'KZ Visuals', rating: '4.9', note: '3 камеры · дрон' }, { title: 'Studio Foto', rating: '4.7', note: 'фото · −30%' }],
+  'Декор': [{ title: 'Flora Decor', rating: '4.8', note: 'живые цветы · +12%' }, { title: 'Minimal Decor', rating: '4.6', note: 'европ. стиль · −18%' }],
+  'Техника': [{ title: 'Pro Sound KZ', rating: '4.8', note: 'концертный звук · +15%' }, { title: 'Event Tech', rating: '4.6', note: 'база · −20%' }],
+  'Кейтеринг': [{ title: 'Azu Catering', rating: '4.8', note: 'банкет · халяль' }, { title: 'Light Bites', rating: '4.6', note: 'фуршет · −15%' }],
+};
+const altsFor = (cat) => ALTS[cat] || [];
+
 /* chip label -> number */
 const GUESTS = { 'до 50': 40, '≈ 80': 80, '≈ 150': 150, '200+': 220 };
 const BUDGETS = { 'до 2 млн ₸': 2000000, '3–5 млн ₸': 5000000, '5–8 млн ₸': 8000000, '8 млн+ ₸': 12000000 };
@@ -195,9 +227,13 @@ const INTAKE = [
   { ai: ['Сәлеметсіз бе! Я EVENT AI.', 'Опишите событие — или ответьте парой кнопок. Соберу под ключ за минуту.'] },
   { q: 'Что организуем?', key: 'type', options: [
       { label: 'Свадьба / Той', scenario: 'wedding' },
+      { label: 'Қыз ұзату', scenario: 'wedding' },
       { label: 'Корпоратив', scenario: 'corporate' },
       { label: 'Юбилей', scenario: 'birthday' },
       { label: 'День рождения', scenario: 'birthday' },
+      { label: 'Сүндет той', scenario: 'birthday' },
+      { label: 'Никах', scenario: 'wedding' },
+      { label: 'Конференция', scenario: 'corporate' },
   ] },
   { q: 'Сколько гостей ожидаете?', key: 'guests', options: [
       { label: 'до 50' }, { label: '≈ 80' }, { label: '≈ 150' }, { label: '200+' },
