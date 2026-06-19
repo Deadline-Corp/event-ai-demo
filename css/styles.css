@@ -799,3 +799,12 @@ body[data-nav=back] .view-exit{animation:viewOutBack .3s var(--ease-in) both}
 .sheet.light .cal-legend .lg.busy{background:transparent;border:1px solid #D0D5DD}
 .sheet.light .cal-legend .lg.sel{background:#156BFF}
 .sheet.light .vd-actions{background:#fff;border-top:1px solid #EAEEF5}
+
+/* still mode — freezes animations so QA screenshots can settle (toggled only via JS for testing) */
+body.still *,body.still *::before,body.still *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0ms!important;transition-duration:.001ms!important}
+
+/* tactile press feedback (mobile life) */
+.vcard:active{transform:scale(.985)}
+.pkg:active,.doc-card:active,.metric:active{transform:scale(.99)}
+.more-chip,.fav,.addbtn{will-change:transform}
+.metric .mv{white-space:nowrap}

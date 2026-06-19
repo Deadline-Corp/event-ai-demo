@@ -168,12 +168,12 @@ function setChrome({ title, back = true, island, action }) {
 
 /* ---------- navigation / transitions ---------- */
 function mountView(html, onMount, chrome) {
-  const old = views.querySelector('.view');
+  const olds = [...views.querySelectorAll('.view')];
   const el = document.createElement('div');
   el.className = 'view view-enter';
   el.innerHTML = (chrome ? progressHTML(chrome._name) : '') + html;
   views.appendChild(el);
-  if (old) { old.classList.add('view-exit'); setTimeout(() => old.remove(), 340); }
+  olds.forEach((old) => { old.classList.add('view-exit'); setTimeout(() => old.remove(), 340); });
   requestAnimationFrame(() => { el.scrollTop = 0; });
   if (onMount) onMount(el);
   return el;
@@ -844,9 +844,10 @@ function confirmBooking() {
   setTimeout(() => {
     $('#again')?.addEventListener('click', resetDemo);
     $('#supBtn')?.addEventListener('click', openSupplier);
+    const mFmt = (n, suf) => suf === '%' ? n + suf : n >= 1e6 ? (n / 1e6).toFixed(n % 1e6 ? 1 : 0).replace('.', ',') + ' млн' + suf : fmt(n) + suf;
     document.querySelectorAll('.success .metric .mv').forEach((el) => {
       const end = +el.dataset.count, suf = el.dataset.suf || '', t0 = performance.now();
-      (function f(now) { const p = Math.min(1, (now - t0) / 1100), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(Math.round(end * e)) + suf; if (p < 1) requestAnimationFrame(f); })(t0);
+      (function f(now) { const p = Math.min(1, (now - t0) / 1100), e = 1 - Math.pow(1 - p, 3); el.textContent = mFmt(Math.round(end * e), suf); if (p < 1) requestAnimationFrame(f); })(t0);
     });
   }, 60);
 }
