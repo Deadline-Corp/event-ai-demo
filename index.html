@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/styles.css?v=10" />
+<link rel="stylesheet" href="css/styles.css?v=11" />
 </head>
 <body>
 
@@ -52,34 +52,43 @@
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor"/></symbol>
     <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9l1-4h14l1 4M5 9h14v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1zM4 9h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.2 5.2l1.8 1.8M17 17l1.8 1.8M18.8 5.2L17 7M7 17l-1.8 1.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18v3H3zM12 9v11M12 9S10.5 4.5 8 5.5 8.5 9 12 9zM12 9s1.5-4.5 4-3.5-.5 3.5-4 3.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="6" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="18" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.1 10.8l6.8-3.6M8.1 13.2l6.8 3.6" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="16" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-mic2" viewBox="0 0 24 24"><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9" y="2.5" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
   </defs>
 </svg>
 
 <!-- welcome / demo gate -->
 <div class="welcome" id="welcome" role="dialog" aria-label="EVENT AI — демо">
+  <button class="wl-theme" id="themeBtn" aria-label="Светлая / тёмная тема">
+    <svg class="ic ic-sun"><use href="#i-sun"/></svg><svg class="ic ic-moon"><use href="#i-moon"/></svg>
+  </button>
   <div class="wl-lang" id="wlLang">
-    <button data-l="ru" class="on">RU</button><button data-l="kz">KZ</button>
+    <button data-l="ru" class="on">RU</button><button data-l="kz">KZ</button><button data-l="en">EN</button>
   </div>
   <div class="wl-col">
     <div class="brandmark wl-mark" id="welcomeMark" aria-hidden="true"></div>
-    <div class="wl-badge"><span class="island-dot"></span>ДЕМО-ВЕРСИЯ · ПРОТОТИП</div>
+    <div class="wl-badge"><span class="island-dot"></span><span data-i18n="badge">ДЕМО-ВЕРСИЯ · ПРОТОТИП</span></div>
     <h1 class="wl-title">
-      <span class="wl-line"><span class="wl-inner" style="--i:0">Ваш личный</span></span>
-      <span class="wl-line"><span class="wl-inner" style="--i:1"><span class="accent">AI</span> event-менеджер</span></span>
+      <span class="wl-line"><span class="wl-inner" style="--i:0" data-i18n="titleA">Ваш личный</span></span>
+      <span class="wl-line"><span class="wl-inner" style="--i:1" data-i18n="titleB"><span class="accent">AI</span> event-менеджер</span></span>
     </h1>
-    <p class="wl-sub">Опишите событие — искусственный интеллект соберёт его под ключ: подбор, смета, сценарий и бронь. Это демо — пройдите весь путь сами, без регистрации.</p>
+    <p class="wl-sub" data-i18n="sub">Опишите событие — искусственный интеллект соберёт его под ключ: подбор, смета, сценарий и бронь. Это демо — пройдите весь путь сами, без регистрации.</p>
     <div class="wl-manifest" id="wlManifest">
-      <div class="lrow"><span class="lk">подрядчики Алматы</span><span class="lead"></span><span class="val" data-count="1240">0</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
-      <div class="lrow"><span class="lk">категории</span><span class="lead"></span><span class="val">9</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
-      <div class="lrow"><span class="lk">AI-сценарии</span><span class="lead"></span><span class="val">готовы</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
-      <div class="lrow"><span class="lk">система</span><span class="lead"></span><span class="val">онлайн</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk" data-i18n="m1">подрядчики Алматы</span><span class="lead"></span><span class="val" data-count="1240">0</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk" data-i18n="m2">категории</span><span class="lead"></span><span class="val">15</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk" data-i18n="m3">AI-сценарии</span><span class="lead"></span><span class="val" data-i18n="m3v">готовы</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
+      <div class="lrow"><span class="lk" data-i18n="m4">система</span><span class="lead"></span><span class="val" data-i18n="m4v">онлайн</span><span class="tick"><svg class="ic"><use href="#i-check"/></svg></span></div>
     </div>
     <button class="btn btn-primary wl-cta" id="enterBtn">
       <span class="wl-cta-main" data-i18n="cta">Запустить демо <svg class="ic"><use href="#i-arrow"/></svg></span>
-      <span class="wl-cta-sub">свободный режим · без регистрации</span>
+      <span class="wl-cta-sub" data-i18n="ctaSub">свободный режим · без регистрации</span>
     </button>
-    <button class="wl-auto" id="autoBtn"><svg class="ic"><use href="#i-play"/></svg> Авто-демо · показ без рук</button>
-    <div class="wl-meta">EVENT AI · Алматы · KZ / RU · DEADLINE</div>
+    <button class="wl-auto" id="autoBtn"><svg class="ic"><use href="#i-play"/></svg> <span data-i18n="auto">Авто-демо · показ без рук</span></button>
+    <div class="wl-meta" data-i18n="meta">EVENT AI · Алматы · KZ / RU / EN · DEADLINE</div>
   </div>
 </div>
 
@@ -112,7 +121,8 @@
   <p class="stage-note">EVENT AI · интерактивное демо · DEADLINE</p>
 </main>
 
-<script src="js/data.js?v=10"></script>
-<script src="js/app.js?v=10"></script>
+<script src="js/data.js?v=11"></script>
+<script src="js/formats.js?v=11"></script>
+<script src="js/app.js?v=11"></script>
 </body>
 </html>

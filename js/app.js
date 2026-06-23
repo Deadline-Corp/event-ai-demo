@@ -13,6 +13,7 @@ const icon = (id, cls = 'ic') => `<svg class="${cls}"><use href="#${id}"/></svg>
 /* ---------- brandmark: golden-spiral of dots ---------- */
 function buildSpiral(el, { color = '#fff', anim = false } = {}) {
   if (!el) return;
+  const col = (color === '#fff' && document.documentElement.dataset.theme === 'light') ? '#2b3650' : color;
   const N = 84, GA = Math.PI * (3 - Math.sqrt(5)), maxR = 45;
   let dots = '';
   for (let i = 1; i <= N; i++) {
@@ -22,7 +23,7 @@ function buildSpiral(el, { color = '#fff', anim = false } = {}) {
     const dr = 0.9 + 2.4 * (i / N);
     const op = 0.45 + 0.55 * (i / N);
     const d = anim ? ` style="--d:${i * 7}ms"` : '';
-    dots += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${dr.toFixed(2)}" fill="${color}" opacity="${op.toFixed(2)}"${d}/>`;
+    dots += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${dr.toFixed(2)}" fill="${col}" opacity="${op.toFixed(2)}"${d}/>`;
   }
   el.innerHTML = `<svg viewBox="0 0 100 100" class="${anim ? 'spiral-anim' : ''}">${dots}</svg>`;
 }
@@ -211,9 +212,91 @@ VIEWS.splash = () => ({
     </div>`,
   onMount: () => {
     buildSpiral($('#splashMark'), { color: '#fff', anim: true });
-    setTimeout(() => navigate('chat'), 2100);
+    setTimeout(() => navigate('roleSelect'), 2100);
   },
 });
+
+/* ============================================================
+   VIEW: ROLE SELECT (Заказчик / Партнёр)
+   ============================================================ */
+VIEWS.roleSelect = () => ({
+  chrome: { title: 'EVENT AI', back: false, island: 'Кто вы?' },
+  html: `
+    <div class="role-wrap">
+      <div class="eyebrow">${icon('i-spark')} Добро пожаловать в EVENT AI</div>
+      <div class="h-lead">Кем вы являетесь?</div>
+      <div class="h-sub">Выберите роль — приложение подстроится под вас</div>
+      <button class="role-card" data-role="client" style="animation-delay:.05s">
+        <div class="role-ic">${icon('i-users')}</div>
+        <div class="role-b">
+          <div class="role-t">Заказчик мероприятия</div>
+          <div class="role-d">Организую событие. AI подберёт подрядчиков, соберёт смету, сценарий и тайминг, поможет забронировать.</div>
+        </div>
+        <span class="role-go">${icon('i-arrow')}</span>
+      </button>
+      <button class="role-card alt" data-role="partner" style="animation-delay:.14s">
+        <div class="role-ic">${icon('i-store')}</div>
+        <div class="role-b">
+          <div class="role-t">Проект / партнёр платформы</div>
+          <div class="role-d">Ресторан, ведущий, артист, техника, декор… Принимайте заявки, ведите календарь и бронирования.</div>
+        </div>
+        <span class="role-go">${icon('i-arrow')}</span>
+      </button>
+      <div class="role-note">${icon('i-shield')} Демо · свободный режим, без регистрации</div>
+    </div>`,
+  onMount: (el) => {
+    el.querySelectorAll('.role-card').forEach((c) => c.addEventListener('click', () => {
+      navigate(c.dataset.role === 'partner' ? 'partner' : 'chat');
+    }));
+  },
+});
+
+/* ============================================================
+   VIEW: PARTNER cabinet (light, 2nd visual system)
+   ============================================================ */
+VIEWS.partner = () => {
+  const reqs = [
+    { n: 'Свадьба · 180 гостей', d: '15 августа', s: 'новая' },
+    { n: 'Корпоратив · 80 гостей', d: '12 декабря', s: 'новая' },
+    { n: 'Юбилей · 60 гостей', d: '20 сентября', s: 'просмотр' },
+  ];
+  return {
+    chrome: { title: 'Кабинет партнёра', island: 'Сторона партнёра' },
+    html: `<div class="partner-view">
+      <div class="biz-top">
+        <div class="biz-id"><div class="biz-av">${icon('i-users')}</div><div><div class="biz-name">${SUPPLIER.title}</div><div class="biz-role">${SUPPLIER.role}</div></div></div>
+        <span class="biz-status">● опубликован</span>
+      </div>
+      <div class="biz-stats">
+        <div class="biz-stat"><div class="bv">12</div><div class="bk">заявок</div></div>
+        <div class="biz-stat"><div class="bv">1 248</div><div class="bk">просмотров</div></div>
+        <div class="biz-stat"><div class="bv">78%</div><div class="bk">загрузка</div></div>
+      </div>
+      <div class="biz-h">Календарь занятости</div>
+      ${miniCalendar({ title: SUPPLIER.title }, 3)}
+      <div class="biz-h">Новые заявки <span class="biz-badge">2 новые</span></div>
+      <div class="biz-reqs">${reqs.map((r, ri) => `<div class="biz-req" data-r="${ri}">
+          <div class="biz-req-l"><div class="biz-req-n">${r.n}</div><div class="biz-req-d">${icon('i-calendar')} ${r.d}</div></div>
+          <div class="biz-req-act"><button class="rq-ok" data-r="${ri}">Принять</button><button class="rq-no" data-r="${ri}">✕</button></div>
+        </div>`).join('')}</div>
+      <div class="biz-h">Финансы</div>
+      <div class="biz-fin">
+        <div class="biz-fin-row"><span>Подтверждённые брони</span><b>9 событий</b></div>
+        <div class="biz-fin-row"><span>К выплате после события</span><b>3 150 000 ₸</b></div>
+        <div class="biz-fin-row"><span>Комиссия платформы</span><b>7%</b></div>
+      </div>
+      <p class="biz-note">Это <b>светлый кабинет партнёра</b> — вторая визуальная система EVENT AI. Клиент и партнёр работают в одной платформе: это и есть двусторонний маркетплейс.</p>
+    </div>`,
+    onMount: (el) => {
+      el.querySelectorAll('.rq-ok').forEach((b) => b.addEventListener('click', () => {
+        const row = b.closest('.biz-req'); row.classList.add('accepted');
+        row.querySelector('.biz-req-act').innerHTML = '<span class="rq-done">✓ принято</span>';
+        toast('Заявка принята · дата закреплена');
+      }));
+      el.querySelectorAll('.rq-no').forEach((b) => b.addEventListener('click', () => { b.closest('.biz-req').style.display = 'none'; }));
+    },
+  };
+};
 
 /* ============================================================
    VIEW: CHAT (intake)
@@ -475,7 +558,8 @@ function burst(el) {
 
 /* ---------- vendor detail sheet ---------- */
 function miniCalendar(v, i) {
-  const parts = S.scenario.date.split(' ');
+  const dstr = (S.scenario && S.scenario.date) || '15 августа';
+  const parts = dstr.split(' ');
   const day = parseInt(parts[0], 10) || 15;
   const month = parts[1] || 'август';
   let cells = '';
@@ -705,11 +789,20 @@ function paneHTML(t, sc) {
       </div></div>`;
   }
   if (t === 'time') {
-    return `<div class="timeline">${sc.timeline.map((it, i) => `
+    const tl = `<div class="timeline">${sc.timeline.map((it, i) => `
       <div class="tl-item" style="animation-delay:${i * 55}ms">
         <div class="tl-time">${it.t}</div>
         <div class="tl-node"><div class="tl-title">${it.title}</div><div class="tl-desc">${it.desc}</div><div class="tl-dur">${icon('i-clock')} ${it.dur}</div></div>
       </div>`).join('')}</div>`;
+    const lu = (Array.isArray(sc.lineup) && sc.lineup.length) ? `
+      <div class="lineup-h">${icon('i-music')} Программа выступлений · lineup</div>
+      <div class="lineup">${sc.lineup.map((a, i) => `
+        <div class="lu-row" style="animation-delay:${i * 60}ms">
+          <div class="lu-slot">${a.slot || ''}</div>
+          <div class="lu-b"><div class="lu-name">${a.name || ''}</div><div class="lu-dur">${icon('i-clock')} ${a.dur || ''}</div></div>
+          <div class="lu-fee">${a.fee || ''}</div>
+        </div>`).join('')}</div>` : '';
+    return `<div>${tl}${lu}</div>`;
   }
   if (t === 'scn') {
     return `<div>${sc.scenario.map((b, i) => `
@@ -782,6 +875,54 @@ VIEWS.documents = () => {
 };
 
 /* ============================================================
+   VIEW: INVITATIONS (free gift — generator)
+   ============================================================ */
+VIEWS.invitations = () => {
+  const sc = S.scenario || SCENARIOS.wedding;
+  S.invStyle = S.invStyle || (sc.national ? 'national' : 'classic');
+  const venue = (sc.vendors && sc.vendors.find((v) => /площад|ресторан|зал|концерт|спорт|студи|лофт/i.test(v.cat || '')) || {}).title || 'Банкетный зал «Жібек Жолы»';
+  const names = sc.national ? 'Айдана & Нұрлан' : (sc.key === 'corporate' ? 'Команда компании' : 'Айдана & Нұрлан');
+  const styles = [{ k: 'national', label: 'Национальный' }, { k: 'classic', label: 'Классика' }, { k: 'minimal', label: 'Минимал' }, { k: 'luxury', label: 'Luxury' }];
+  return {
+    chrome: {
+      title: 'Пригласительные', island: 'Подарок от EVENT AI',
+      action: `<button class="btn btn-primary" id="invDone">${icon('i-check')} Сохранить и продолжить</button>`,
+    },
+    html: `
+      <div class="ai-banner" style="margin-bottom:14px"><div class="av"><div class="brandmark mark" id="invMark"></div></div>
+        <p><b>Бесплатно в подарок</b> от EVENT AI — пригласительное для гостей. Выберите стиль; дату, место и повод AI подставил из вашего проекта.</p></div>
+      <div class="inv-styles">${styles.map((s) => `<button class="inv-seg ${S.invStyle === s.k ? 'sel' : ''}" data-k="${s.k}">${s.label}</button>`).join('')}</div>
+      <div class="inv-stage">
+        <div class="invite" id="invCard" data-style="${S.invStyle}">
+          <span class="inv-orn inv-orn-1"></span><span class="inv-orn inv-orn-2"></span>
+          <div class="inv-kicker">Приглашение</div>
+          <div class="inv-names">${names}</div>
+          <div class="inv-line">приглашают вас на</div>
+          <div class="inv-event">${sc.concept || sc.typeLabel || 'Торжество'}</div>
+          <div class="inv-meta"><span>${icon('i-calendar')} ${sc.date}</span><span class="dotsep"></span><span>${icon('i-map')} ${sc.city}</span></div>
+          <div class="inv-venue">${venue}</div>
+          <div class="inv-foot"><span class="inv-mk brandmark" id="invMk2"></span> создано в EVENT AI</div>
+        </div>
+      </div>
+      <div class="inv-hint">${icon('i-spark')} Меняйте стиль — карточка перерисовывается мгновенно</div>
+      <div class="share-row"><button class="sbtn" id="invDl">${icon('i-download')} Скачать PNG</button><button class="sbtn" id="invShare">${icon('i-share')} Отправить гостям</button></div>`,
+    onMount: (el) => {
+      buildSpiral($('#invMark', el), { color: 'var(--accent-2)' });
+      buildSpiral($('#invMk2', el), { color: 'currentColor' });
+      el.querySelectorAll('.inv-seg').forEach((s) => s.addEventListener('click', () => {
+        S.invStyle = s.dataset.k;
+        el.querySelectorAll('.inv-seg').forEach((x) => x.classList.toggle('sel', x === s));
+        const card = $('#invCard', el); card.dataset.style = s.dataset.k;
+        card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'inviteIn .5s var(--ease) both';
+      }));
+      $('#invDl', el).addEventListener('click', () => toast('Пригласительное сохранено в PNG'));
+      $('#invShare', el).addEventListener('click', () => toast('Ссылка на пригласительное скопирована'));
+      $('#invDone').addEventListener('click', () => { toast('Пригласительные готовы 🎁'); goBack(); });
+    },
+  };
+};
+
+/* ============================================================
    VIEW: BOOKING → success
    ============================================================ */
 VIEWS.booking = () => {
@@ -827,7 +968,14 @@ function confirmBooking() {
         <div class="rr"><span>Депозит</span><span class="rv">50 000 ₸</span></div>
         <div class="rr tot"><span>Статус</span><span class="rv okk">● забронировано</span></div>
       </div>
-      <button class="supplier-link" id="supBtn">${icon('i-store')} Сторона подрядчика — что видит он →</button>
+      <div class="bk-status">
+        <div class="traction-h">${icon('i-clock')} Статус брони <span>в реальном времени</span></div>
+        <div class="status-pipe">
+          ${[['Встреча с клиентом назначена', 'done'], ['Встреча проведена', 'active'], ['Получен аванс', ''], ['Оплачена комиссия платформы 7%', ''], ['Баланс заполнен', ''], ['Проект подтвердил готовность к мероприятию', '']].map(([t, s], i) => `<div class="sp-step ${s}" style="--i:${i}"><span class="sp-dot">${icon('i-check')}</span><span class="sp-t">${t}</span></div>`).join('')}
+        </div>
+      </div>
+      <button class="inv-cta" id="invBtn"><span class="inv-cta-ic">${icon('i-gift')}</span><span class="inv-cta-b">Создать пригласительные<small>бесплатно в подарок от EVENT AI</small></span>${icon('i-arrow')}</button>
+      <button class="supplier-link" id="supBtn">${icon('i-store')} Сторона партнёра — что видит он →</button>
       <div class="traction">
         <div class="traction-h">${icon('i-spark')} Трекшн платформы <span>иллюстративно</span></div>
         <div class="metrics">${METRICS.map((m) => `<div class="metric"><div class="mv" data-count="${m.v}" data-suf="${m.suf}">0</div><div class="mk">${m.k}</div></div>`).join('')}</div>
@@ -844,6 +992,7 @@ function confirmBooking() {
   setTimeout(() => {
     $('#again')?.addEventListener('click', resetDemo);
     $('#supBtn')?.addEventListener('click', openSupplier);
+    $('#invBtn')?.addEventListener('click', () => navigate('invitations'));
     const mFmt = (n, suf) => suf === '%' ? n + suf : n >= 1e6 ? (n / 1e6).toFixed(n % 1e6 ? 1 : 0).replace('.', ',') + ' млн' + suf : fmt(n) + suf;
     document.querySelectorAll('.success .metric .mv').forEach((el) => {
       const end = +el.dataset.count, suf = el.dataset.suf || '', t0 = performance.now();
@@ -939,13 +1088,49 @@ function enterApp() {
 }
 $('#enterBtn')?.addEventListener('click', enterApp);
 
-/* ---------- language toggle ---------- */
-const LANG_CTA = { ru: 'Запустить демо', kz: 'Демоны бастау' };
+/* ---------- theme (light / dark) ---------- */
+function markColor(c) { return (c === '#fff' && document.documentElement.dataset.theme === 'light') ? '#2b3650' : c; }
+function applyTheme(t) {
+  document.documentElement.dataset.theme = (t === 'light') ? 'light' : 'dark';
+  try { localStorage.setItem('ea-theme', document.documentElement.dataset.theme); } catch (e) {}
+  const m = $('#welcomeMark'); if (m) buildSpiral(m, { color: '#fff', anim: false });
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t === 'light' ? '#EEF2F9' : '#04060B');
+}
+function initTheme() {
+  let t = 'dark';
+  try { t = localStorage.getItem('ea-theme') || 'dark'; } catch (e) {}
+  document.documentElement.dataset.theme = (t === 'light') ? 'light' : 'dark';
+}
+$('#themeBtn')?.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+});
+
+/* ---------- language (RU / KZ / EN) ---------- */
+const WELCOME_I18N = {
+  ru: { badge: 'ДЕМО-ВЕРСИЯ · ПРОТОТИП', titleA: 'Ваш личный', titleB: '<span class="accent">AI</span> event-менеджер',
+    sub: 'Опишите событие — искусственный интеллект соберёт его под ключ: подбор, смета, сценарий и бронь. Это демо — пройдите весь путь сами, без регистрации.',
+    m1: 'подрядчики Алматы', m2: 'категории', m3: 'AI-сценарии', m3v: 'готовы', m4: 'система', m4v: 'онлайн',
+    cta: 'Запустить демо <svg class="ic"><use href="#i-arrow"/></svg>', ctaSub: 'свободный режим · без регистрации',
+    auto: 'Авто-демо · показ без рук', meta: 'EVENT AI · Алматы · KZ / RU / EN · DEADLINE' },
+  kz: { badge: 'ДЕМО-НҰСҚА · ПРОТОТИП', titleA: 'Сіздің жеке', titleB: '<span class="accent">AI</span> іс-шара менеджеріңіз',
+    sub: 'Іс-шараңызды сипаттаңыз — жасанды интеллект оны кілтпен жинайды: таңдау, смета, сценарий және брондау. Бұл демо — бәрін өзіңіз өтіңіз, тіркеусіз.',
+    m1: 'Алматы мердігерлері', m2: 'санаттар', m3: 'AI-сценарийлер', m3v: 'дайын', m4: 'жүйе', m4v: 'онлайн',
+    cta: 'Демоны бастау <svg class="ic"><use href="#i-arrow"/></svg>', ctaSub: 'еркін режим · тіркеусіз',
+    auto: 'Авто-демо · қолсыз көрсету', meta: 'EVENT AI · Алматы · KZ / RU / EN · DEADLINE' },
+  en: { badge: 'DEMO VERSION · PROTOTYPE', titleA: 'Your personal', titleB: '<span class="accent">AI</span> event manager',
+    sub: 'Describe your event — AI assembles it end-to-end: vendors, estimate, script and booking. This is a demo — walk the whole flow yourself, no sign-up.',
+    m1: 'Almaty vendors', m2: 'categories', m3: 'AI scripts', m3v: 'ready', m4: 'system', m4v: 'online',
+    cta: 'Launch demo <svg class="ic"><use href="#i-arrow"/></svg>', ctaSub: 'free mode · no sign-up',
+    auto: 'Auto-demo · hands-free tour', meta: 'EVENT AI · Almaty · KZ / RU / EN · DEADLINE' },
+};
+if (typeof I18N !== 'undefined' && !I18N.en) I18N.en = { pusk: 'START', greetingShort: 'Describe your event — or tap a few buttons.', guestsWord: 'guests' };
 function setLang(l) {
   S.lang = l;
   document.querySelectorAll('#wlLang button').forEach((b) => b.classList.toggle('on', b.dataset.l === l));
-  const cta = document.querySelector('[data-i18n="cta"]');
-  if (cta) cta.innerHTML = `${LANG_CTA[l]} <svg class="ic"><use href="#i-arrow"/></svg>`;
+  const dict = WELCOME_I18N[l] || WELCOME_I18N.ru;
+  document.querySelectorAll('#welcome [data-i18n]').forEach((el) => {
+    const k = el.dataset.i18n; if (dict[k] != null) el.innerHTML = dict[k];
+  });
 }
 $('#wlLang')?.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setLang(b.dataset.l); });
 
@@ -980,6 +1165,7 @@ async function autoPlay() {
   hint.innerHTML = `<span class="dot"></span> АВТО-ДЕМО · коснитесь экрана, чтобы взять управление`;
   $('#screen').appendChild(hint);
   enterApp();
+  await autoTap('.role-card[data-role="client"]', 1000);
   for (let q = 0; q < 4 && autoOn; q++) await autoTap('.chat-chips .chip', 820);
   await autoTap('#puskBtn', 650);
   if (await waitFor('.vcard') && autoOn) await sleep(1500);
@@ -993,7 +1179,13 @@ async function autoPlay() {
   await sleep(800); await autoTap('#toDocs', 600);
   await autoTap('#toBook', 800);
   const pay = autoOn && await waitFor('.pay'); if (pay && autoOn) { await sleep(700); pulseAt(pay); pay.click(); }
-  if (await waitFor('.success') && autoOn) await sleep(2800);
+  if (await waitFor('.success') && autoOn) await sleep(2200);
+  await autoTap('#invBtn', 700);
+  if (await waitFor('.invite') && autoOn) {
+    await sleep(1300);
+    const seg = document.querySelectorAll('.inv-seg');
+    if (seg[2] && autoOn) { pulseAt(seg[2]); seg[2].click(); await sleep(1300); }
+  }
   if (autoOn) { stopAuto(); showWelcome(); }
 }
 $('#autoBtn')?.addEventListener('click', autoPlay);
@@ -1038,4 +1230,5 @@ document.addEventListener('pointermove', (e) => {
 });
 
 /* ---------- boot ---------- */
+initTheme();
 showWelcome();

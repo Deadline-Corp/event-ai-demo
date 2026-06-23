@@ -3,3 +3,4 @@ assets/img/*.png
 .DS_Store
 Thumbs.db
 node_modules/
+client-examples/
