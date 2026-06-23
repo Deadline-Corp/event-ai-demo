@@ -988,3 +988,11 @@ html[data-theme="light"] .inv-seg.sel{color:var(--accent)}
 .lu-dur{font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;display:flex;align-items:center;gap:4px}
 .lu-dur .ic{width:11px;height:11px}
 .lu-fee{flex:none;font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--text-2);font-variant-numeric:tabular-nums}
+
+/* ============================================================ BRAND LOGO (client's real EVENT AI logo) */
+.bm-img{width:100%;height:100%;object-fit:contain;display:block}
+.bm-anim{animation:bmIn .6s var(--ease) both}
+@keyframes bmIn{from{opacity:0;transform:scale(.62) rotate(-10deg)}to{opacity:1;transform:none}}
+.wl-logo{height:46px;width:auto;max-width:240px;object-fit:contain;margin-bottom:24px;
+  filter:drop-shadow(0 8px 26px rgba(44,123,255,.3));opacity:0;animation:fadeUp .7s var(--ease) .12s both}
+@media(max-width:1019px){.wl-logo{height:40px}}

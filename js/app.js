@@ -11,21 +11,13 @@ const num = (s) => Number(String(s).replace(/[^\d]/g, ''));
 const icon = (id, cls = 'ic') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
 
 /* ---------- brandmark: golden-spiral of dots ---------- */
-function buildSpiral(el, { color = '#fff', anim = false } = {}) {
+/* brand assets — client's real EVENT AI logo (theme-aware) */
+function markSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/mark-light.png' : 'assets/mark-dark.png') + '?v=11'; }
+function logoSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/logo-light.png' : 'assets/logo-dark.png') + '?v=11'; }
+/* renders the client's brand MARK into a square .brandmark element (kept the name buildSpiral for call-site compatibility) */
+function buildSpiral(el, { anim = false } = {}) {
   if (!el) return;
-  const col = (color === '#fff' && document.documentElement.dataset.theme === 'light') ? '#2b3650' : color;
-  const N = 84, GA = Math.PI * (3 - Math.sqrt(5)), maxR = 45;
-  let dots = '';
-  for (let i = 1; i <= N; i++) {
-    const r = maxR * Math.sqrt(i / N);
-    const a = i * GA;
-    const x = 50 + r * Math.cos(a), y = 50 + r * Math.sin(a);
-    const dr = 0.9 + 2.4 * (i / N);
-    const op = 0.45 + 0.55 * (i / N);
-    const d = anim ? ` style="--d:${i * 7}ms"` : '';
-    dots += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${dr.toFixed(2)}" fill="${col}" opacity="${op.toFixed(2)}"${d}/>`;
-  }
-  el.innerHTML = `<svg viewBox="0 0 100 100" class="${anim ? 'spiral-anim' : ''}">${dots}</svg>`;
+  el.innerHTML = `<img src="${markSrc()}" alt="EVENT AI" class="bm-img${anim ? ' bm-anim' : ''}" draggable="false"/>`;
 }
 
 /* spiral animation + few runtime styles */
@@ -1069,7 +1061,7 @@ function showWelcome() {
   document.body.dataset.stage = 'welcome';
   w.classList.remove('is-gone'); w.style.display = 'grid';
   const col = w.querySelector('.wl-col'); col.style.display = 'none'; void col.offsetWidth; col.style.display = '';
-  buildSpiral($('#welcomeMark'), { color: '#fff', anim: true });
+  const wl = $('#welcomeLogo'); if (wl) wl.src = logoSrc();
   const rows = [...w.querySelectorAll('.lrow')];
   rows.forEach((r, i) => { r.style.setProperty('--r', i); r.classList.remove('on'); setTimeout(() => r.classList.add('on'), 820 + i * 150); });
   const cv = w.querySelector('.val[data-count]');
@@ -1093,7 +1085,7 @@ function markColor(c) { return (c === '#fff' && document.documentElement.dataset
 function applyTheme(t) {
   document.documentElement.dataset.theme = (t === 'light') ? 'light' : 'dark';
   try { localStorage.setItem('ea-theme', document.documentElement.dataset.theme); } catch (e) {}
-  const m = $('#welcomeMark'); if (m) buildSpiral(m, { color: '#fff', anim: false });
+  const wl = $('#welcomeLogo'); if (wl) wl.src = logoSrc();
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t === 'light' ? '#EEF2F9' : '#04060B');
 }
 function initTheme() {
