@@ -807,8 +807,8 @@ const nextBtn = document.getElementById('nextBtn');
 const dotsEl = document.getElementById('navDots');
 
 // Build spiral logos
-buildSpiral(document.getElementById('coverLogo'), {color: '#5AA0FF'});
-buildSpiral(document.getElementById('topLogo'), {color: '#5AA0FF'});
+document.getElementById('coverLogo').innerHTML = '<img src="../assets/mark-dark.png" alt="EVENT AI" style="width:100%;height:100%;object-fit:contain">';
+document.getElementById('topLogo').innerHTML = '<img src="../assets/mark-dark.png" alt="EVENT AI" style="width:100%;height:100%;object-fit:contain">';
 
 // Build dots
 for (let i = 0; i < TOTAL; i++) {
