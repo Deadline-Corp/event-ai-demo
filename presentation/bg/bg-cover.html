@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #04060B; }
+.bg {
+  position: absolute;
+  inset: 0;
+  background: #04060B;
+}
+/* Main radial glow top-right */
+.glow-main {
+  position: absolute;
+  top: -200px;
+  right: -150px;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(ellipse at center, rgba(44,123,255,0.32) 0%, rgba(44,123,255,0.14) 30%, rgba(44,123,255,0.04) 60%, transparent 75%);
+  border-radius: 50%;
+}
+/* Secondary soft glow bottom-left */
+.glow-secondary {
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(44,123,255,0.10) 0%, rgba(44,123,255,0.03) 50%, transparent 70%);
+  border-radius: 50%;
+}
+/* Grid overlay */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.032) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+/* Subtle horizontal line */
+.line-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(44,123,255,0.08) 20%, rgba(44,123,255,0.15) 50%, rgba(44,123,255,0.08) 80%, transparent 100%);
+}
+/* Vignette */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(2,4,8,0.65) 100%);
+}
+/* Thin accent arc top-right */
+.arc {
+  position: absolute;
+  top: -60px;
+  right: 80px;
+  width: 520px;
+  height: 520px;
+  border: 1px solid rgba(44,123,255,0.12);
+  border-radius: 50%;
+}
+.arc2 {
+  position: absolute;
+  top: 10px;
+  right: 150px;
+  width: 380px;
+  height: 380px;
+  border: 1px solid rgba(44,123,255,0.07);
+  border-radius: 50%;
+}
+/* Noise texture simulation via gradient */
+.noise {
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.4;
+}
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="glow-main"></div>
+  <div class="glow-secondary"></div>
+  <div class="grid"></div>
+  <div class="arc"></div>
+  <div class="arc2"></div>
+  <div class="line-h"></div>
+  <div class="noise"></div>
+  <div class="vignette"></div>
+</body>
+</html>

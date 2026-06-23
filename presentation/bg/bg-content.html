@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #04060B; }
+.bg { position: absolute; inset: 0; background: #04060B; }
+/* Subtle glow top-right corner */
+.glow-main {
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(ellipse at center, rgba(44,123,255,0.18) 0%, rgba(44,123,255,0.07) 40%, transparent 70%);
+  border-radius: 50%;
+}
+/* Very faint glow bottom-left */
+.glow-dim {
+  position: absolute;
+  bottom: -80px;
+  left: 200px;
+  width: 400px;
+  height: 300px;
+  background: radial-gradient(ellipse at center, rgba(44,123,255,0.06) 0%, transparent 65%);
+  border-radius: 50%;
+}
+/* Grid overlay */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 90% at 60% 40%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 90% at 60% 40%, black 20%, transparent 100%);
+}
+/* Thin blue accent line on the left */
+.accent-line {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 3px;
+  height: 820px;
+  background: linear-gradient(180deg, transparent 0%, rgba(44,123,255,0.0) 5%, rgba(44,123,255,0.55) 30%, rgba(44,123,255,0.55) 70%, rgba(44,123,255,0.0) 95%, transparent 100%);
+}
+/* Very subtle top border */
+.top-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(44,123,255,0.25) 30%, rgba(44,123,255,0.40) 60%, rgba(44,123,255,0.10) 90%, transparent 100%);
+}
+/* Vignette */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 45%, rgba(2,4,8,0.55) 100%);
+}
+/* Tiny dot pattern subtle */
+.dots {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 500px;
+  height: 500px;
+  background-image: radial-gradient(circle, rgba(44,123,255,0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 70% 70% at 80% 20%, black 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 80% 20%, black 0%, transparent 100%);
+}
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="glow-main"></div>
+  <div class="glow-dim"></div>
+  <div class="grid"></div>
+  <div class="dots"></div>
+  <div class="accent-line"></div>
+  <div class="top-border"></div>
+  <div class="vignette"></div>
+</body>
+</html>
