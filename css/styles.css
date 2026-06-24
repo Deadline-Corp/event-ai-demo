@@ -469,7 +469,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .toast .ic{width:16px;height:16px;color:var(--good)}
 
 /* ============================================================ WELCOME / DEMO GATE */
-.welcome{position:fixed;inset:0;z-index:80;display:grid;place-items:center;
+.welcome{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:max(40px,env(safe-area-inset-top)) 26px max(34px,env(safe-area-inset-bottom));
   background:
     radial-gradient(680px 520px at 50% 32%, rgba(44,123,255,.15), transparent 64%),
@@ -479,7 +479,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .welcome::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 95% at 50% 48%,transparent 56%,rgba(0,0,0,.5))}
 .welcome.is-gone{transform:scale(1.06);opacity:0;filter:blur(8px);pointer-events:none}
-.wl-col{position:relative;z-index:1;width:min(440px,90vw);display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.wl-col{position:relative;z-index:1;width:min(440px,90vw);display:flex;flex-direction:column;align-items:flex-start;text-align:left;margin:auto 0;flex:none}
 .wl-mark{width:78px;height:78px;margin-bottom:24px;filter:drop-shadow(0 0 34px var(--accent-glow));opacity:0;animation:fadeUp .7s var(--ease) .12s both}
 .wl-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);padding:7px 13px;border-radius:999px;
@@ -1021,6 +1021,13 @@ html[data-theme="light"] .wl-theme .ic-moon{opacity:1;transform:none;color:var(-
 .map-stats .ms span{font-size:10.5px;color:var(--text-3);margin-top:3px;display:block}
 .map-canvas{border-radius:16px;overflow:hidden;border:1px solid var(--hair);box-shadow:var(--sh-card)}
 .map-canvas svg{display:block;width:100%;height:auto}
+#leafMap{width:100%;height:340px;background:#060a14}
+.leaflet-container{background:#060a14!important;font-family:var(--mono)}
+.leaflet-control-attribution{font-size:8px!important;background:rgba(6,10,20,.55)!important;color:var(--text-3)!important;padding:2px 6px!important}
+.leaflet-control-attribution a{color:var(--text-2)!important}
+.leaflet-attribution-flag{display:none!important}
+.map-pin{background:transparent!important;border:none!important}
+.mp-dot{display:block;width:14px;height:14px;border-radius:50%;background:var(--pc);border:2px solid #fff;box-shadow:0 0 11px 2px var(--pc),0 1px 3px rgba(0,0,0,.6)}
 .pin.pulse{animation:pinPulse 2.4s ease-in-out infinite;animation-delay:var(--pd)}
 @keyframes pinPulse{0%,100%{opacity:1}50%{opacity:.5}}
 .map-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:14px 2px 8px}

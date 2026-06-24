@@ -334,12 +334,12 @@ VIEWS.map = () => {
     { k: 'Площадки', c: '#2C7BFF' }, { k: 'Ведущие', c: '#34D399' }, { k: 'Артисты', c: '#F5B544' },
     { k: 'Декор', c: '#F472B6' }, { k: 'Фото / видео', c: '#22D3EE' }, { k: 'Техника', c: '#A78BFA' },
   ];
-  const pins = [
-    { x: 200, y: 118, i: 0 }, { x: 168, y: 138, i: 1 }, { x: 232, y: 108, i: 2 }, { x: 150, y: 100, i: 4 },
-    { x: 250, y: 150, i: 3 }, { x: 188, y: 166, i: 5 }, { x: 212, y: 88, i: 0 }, { x: 128, y: 158, i: 1 },
-    { x: 272, y: 122, i: 2 }, { x: 160, y: 188, i: 3 }, { x: 242, y: 184, i: 4 }, { x: 108, y: 128, i: 5 },
-    { x: 292, y: 158, i: 0 }, { x: 204, y: 202, i: 1 }, { x: 300, y: 98, i: 2 }, { x: 120, y: 92, i: 0 },
-    { x: 264, y: 196, i: 5 }, { x: 178, y: 112, i: 3 },
+  const pts = [
+    [43.2567, 76.9286, 0], [43.2389, 76.8897, 1], [43.2220, 76.8712, 2], [43.2641, 76.9450, 3],
+    [43.2480, 76.9120, 4], [43.2305, 76.8550, 5], [43.2712, 76.9180, 0], [43.2190, 76.9320, 1],
+    [43.2520, 76.8830, 2], [43.2350, 76.9560, 3], [43.2270, 76.9050, 4], [43.2600, 76.8650, 5],
+    [43.2430, 76.9400, 0], [43.2150, 76.8980, 1], [43.2690, 76.9350, 2], [43.2330, 76.8740, 0],
+    [43.2585, 76.9020, 5], [43.2255, 76.9210, 3],
   ];
   return {
     chrome: {
@@ -353,28 +353,22 @@ VIEWS.map = () => {
         <div class="ms"><b>11</b><span>категорий</span></div>
         <div class="ms"><b>8</b><span>районов</span></div>
       </div>
-      <div class="map-canvas">
-        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
-          <defs><radialGradient id="mbg" cx="50%" cy="40%" r="72%"><stop offset="0%" stop-color="#0c1730"/><stop offset="100%" stop-color="#060a14"/></radialGradient></defs>
-          <rect width="400" height="280" fill="url(#mbg)"/>
-          <g stroke="rgba(255,255,255,0.05)" stroke-width="1">
-            <line x1="0" y1="70" x2="400" y2="60"/><line x1="0" y1="140" x2="400" y2="135"/><line x1="0" y1="210" x2="400" y2="205"/>
-            <line x1="100" y1="0" x2="110" y2="280"/><line x1="200" y1="0" x2="205" y2="280"/><line x1="300" y1="0" x2="298" y2="280"/>
-          </g>
-          <path d="M40,150 Q140,128 210,160 T380,150" fill="none" stroke="rgba(44,123,255,0.18)" stroke-width="2"/>
-          <path d="M0,250 L60,224 L110,238 L165,206 L215,232 L268,206 L330,230 L400,210 L400,280 L0,280 Z" fill="rgba(44,123,255,0.07)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-          <text x="392" y="272" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(255,255,255,0.28)">Заилийский Алатау</text>
-          ${pins.map((p, idx) => `<g class="pin${idx % 4 === 0 ? ' pulse' : ''}" style="--pd:${(idx * 0.18).toFixed(2)}s">
-            <circle cx="${p.x}" cy="${p.y}" r="12" fill="${cats[p.i].c}" opacity="0.16"/>
-            <circle cx="${p.x}" cy="${p.y}" r="4.6" fill="${cats[p.i].c}"/>
-            <circle cx="${p.x}" cy="${p.y}" r="1.7" fill="#fff" opacity="0.92"/>
-          </g>`).join('')}
-        </svg>
-      </div>
+      <div class="map-canvas"><div id="leafMap"></div></div>
       <div class="map-legend">${cats.map((c) => `<span class="lg"><i style="background:${c.c}"></i>${c.k}</span>`).join('')}</div>
-      <p class="map-note">В демо — иллюстративная карта. В продукте: реальные подрядчики на карте города, фильтр по категории, бюджету и свободной дате.</p>
+      <p class="map-note">Реальная карта Алматы. В продукте — живые подрядчики с фильтром по категории, бюджету и свободной дате.</p>
     </div>`,
-    onMount: () => { $('#mapStart')?.addEventListener('click', () => navigate('roleSelect')); },
+    onMount: () => {
+      $('#mapStart')?.addEventListener('click', () => navigate('roleSelect'));
+      if (typeof L === 'undefined') return;
+      const map = L.map('leafMap', { center: [43.2405, 76.9100], zoom: 12, zoomControl: false, scrollWheelZoom: false, attributionControl: true });
+      map.attributionControl.setPrefix(false);
+      L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Esri · HERE · Garmin' }).addTo(map);
+      pts.forEach(([la, lo, ci]) => {
+        const ic = L.divIcon({ className: 'map-pin', html: `<span class="mp-dot" style="--pc:${cats[ci].c}"></span>`, iconSize: [18, 18], iconAnchor: [9, 9] });
+        L.marker([la, lo], { icon: ic, keyboard: false }).addTo(map);
+      });
+      setTimeout(() => map.invalidateSize(), 250);
+    },
   };
 };
 
@@ -1256,7 +1250,7 @@ function countTo(el, end, dur = 950) {
 function showWelcome() {
   const w = $('#welcome'); if (!w) { navigate('splash'); return; }
   document.body.dataset.stage = 'welcome';
-  w.classList.remove('is-gone'); w.style.display = 'grid';
+  w.classList.remove('is-gone'); w.style.display = 'flex';
   const col = w.querySelector('.wl-col'); col.style.display = 'none'; void col.offsetWidth; col.style.display = '';
   const wl = $('#welcomeLogo'); if (wl) wl.src = logoSrc();
   const rows = [...w.querySelectorAll('.lrow')];
