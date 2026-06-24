@@ -4,3 +4,5 @@ assets/img/*.png
 Thumbs.db
 node_modules/
 client-examples/
+video/
+presentation/bg/
