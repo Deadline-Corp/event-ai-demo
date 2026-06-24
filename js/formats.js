@@ -307,7 +307,7 @@ const FORMATS = {
   /* 6. Казахский той (национальный) */
   kazakh_toy: {
     key: 'kazakh_toy', typeLabel: 'Национальный той', typeLabelKz: 'Ұлттық той', typeLabelEn: 'Kazakh National Wedding Feast',
-    concept: 'Ұлттық той — большой казахский той', conceptKz: 'Ұлы дәстүрлі той · Алматы',
+    concept: 'Национальный той — большой казахский праздник', conceptKz: 'Ұлы дәстүрлі той · Алматы',
     conceptEn: 'Grand Kazakh Celebration · Almaty',
     conceptSub: 'Алматы · Той-үй / юрточный комплекс',
     city: 'Алматы', date: '20 сентября', national: true,
