@@ -235,6 +235,7 @@ VIEWS.roleSelect = () => ({
         <span class="role-go">${icon('i-arrow')}</span>
       </button>
       <div class="role-note">${icon('i-shield')} Демо · свободный режим, без регистрации</div>
+      <div class="role-prod"><span class="role-prod-tag">В полной версии</span>выбор и переключение роли будут в личном кабинете пользователя. Здесь оба входа показаны рядом — для демонстрации.</div>
     </div>`,
   onMount: (el) => {
     el.querySelectorAll('.role-card').forEach((c) => c.addEventListener('click', () => {
