@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/styles.css?v=12" />
+<link rel="stylesheet" href="css/styles.css?v=13" />
 </head>
 <body>
 
@@ -67,7 +67,12 @@
     <svg class="ic ic-sun"><use href="#i-sun"/></svg><svg class="ic ic-moon"><use href="#i-moon"/></svg>
   </button>
   <div class="wl-lang" id="wlLang">
-    <button data-l="ru" class="on">RU</button><button data-l="kz">KZ</button><button data-l="en">EN</button>
+    <button class="wl-lang-btn" id="wlLangBtn" aria-haspopup="true" aria-expanded="false" aria-label="Язык интерфейса"><span id="wlLangCur">RU</span><svg class="ic wl-lang-cv"><use href="#i-arrow"/></svg></button>
+    <div class="wl-lang-menu" id="wlLangMenu" role="menu">
+      <button data-l="ru" class="on" role="menuitem">RU · Русский</button>
+      <button data-l="kz" role="menuitem">KZ · Қазақша</button>
+      <button data-l="en" role="menuitem">EN · English</button>
+    </div>
   </div>
   <div class="wl-col">
     <img class="wl-logo" id="welcomeLogo" alt="EVENT AI" draggable="false" />
@@ -121,8 +126,8 @@
   <p class="stage-note">EVENT AI · интерактивное демо · DEADLINE</p>
 </main>
 
-<script src="js/data.js?v=12"></script>
-<script src="js/formats.js?v=12"></script>
-<script src="js/app.js?v=12"></script>
+<script src="js/data.js?v=13"></script>
+<script src="js/formats.js?v=13"></script>
+<script src="js/app.js?v=13"></script>
 </body>
 </html>

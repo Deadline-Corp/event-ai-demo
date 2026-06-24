@@ -722,11 +722,11 @@ const FORMATS = {
 
 /* ---------- TYPE_OPTIONS для INTAKE[1].options ---------- */
 const TYPE_OPTIONS = [
-  { label: 'Свадьба / Той', scenario: 'wedding' },
-  { label: 'Қыз ұзату', scenario: 'uzatu' },
+  { label: 'Свадьба', scenario: 'wedding' },
+  { label: 'Узату (проводы невесты)', scenario: 'uzatu' },
   { label: 'Беташар', scenario: 'betashar' },
   { label: 'Никах', scenario: 'nikah' },
-  { label: 'Сүндет той', scenario: 'sundetoi' },
+  { label: 'Сюндет той', scenario: 'sundetoi' },
   { label: 'Национальный той', scenario: 'kazakh_toy' },
   { label: 'Юбилей', scenario: 'jubilee' },
   { label: 'День рождения', scenario: 'birthday_party' },

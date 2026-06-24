@@ -196,7 +196,7 @@ backBtn.addEventListener('click', goBack);
    ============================================================ */
 VIEWS.splash = () => ({
   chrome: { title: 'EVENT AI', back: false, island: 'EVENT AI' },
-  html: `<div class="view splash-inner" style="position:static;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0">
+  html: `<div class="view splash splash-inner" style="position:static;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0">
       <div class="brandmark mark" id="splashMark"></div>
       <div class="name">EVENT AI</div>
       <div class="sub">Личный AI event-менеджер</div>
@@ -248,36 +248,70 @@ VIEWS.roleSelect = () => ({
    ============================================================ */
 VIEWS.partner = () => {
   const reqs = [
-    { n: 'Свадьба · 180 гостей', d: '15 августа', s: 'новая' },
-    { n: 'Корпоратив · 80 гостей', d: '12 декабря', s: 'новая' },
-    { n: 'Юбилей · 60 гостей', d: '20 сентября', s: 'просмотр' },
+    { n: 'Свадьба · 180 гостей', d: '15 августа', b: '900 000 ₸' },
+    { n: 'Юбилей · 60 гостей', d: '20 сентября', b: '450 000 ₸' },
+    { n: 'Корпоратив · 80 гостей', d: '12 декабря', b: '600 000 ₸' },
   ];
   return {
     chrome: { title: 'Кабинет партнёра', island: 'Сторона партнёра' },
     html: `<div class="partner-view">
       <div class="biz-top">
-        <div class="biz-id"><div class="biz-av">${icon('i-users')}</div><div><div class="biz-name">${SUPPLIER.title}</div><div class="biz-role">${SUPPLIER.role}</div></div></div>
+        <div class="biz-id"><div class="biz-av">${icon('i-mic2')}</div>
+          <div>
+            <div class="biz-name">${SUPPLIER.title}</div>
+            <div class="biz-role">${SUPPLIER.role}</div>
+            <div class="biz-meta-row">
+              <span class="biz-rating">${icon('i-star')} 4.9 · 142 отзыва</span>
+              <span class="biz-verified">✓ проверен</span>
+            </div>
+          </div>
+        </div>
         <span class="biz-status">● опубликован</span>
       </div>
-      <div class="biz-stats">
-        <div class="biz-stat"><div class="bv">12</div><div class="bk">заявок</div></div>
-        <div class="biz-stat"><div class="bv">1 248</div><div class="bk">просмотров</div></div>
-        <div class="biz-stat"><div class="bv">78%</div><div class="bk">загрузка</div></div>
+
+      <div class="biz-kpi">
+        <div class="biz-stat"><div class="bv">1 248</div><div class="bk">просмотров профиля</div><div class="bd">↑ 18% за месяц</div></div>
+        <div class="biz-stat"><div class="bv">12</div><div class="bk">входящих заявок</div><div class="bd">↑ 4 новых</div></div>
+        <div class="biz-stat"><div class="bv">9</div><div class="bk">броней за месяц</div><div class="bd">↑ 2</div></div>
+        <div class="biz-stat"><div class="bv">3.15 млн&nbsp;₸</div><div class="bk">доход за месяц</div><div class="bd flat">после комиссии</div></div>
       </div>
-      <div class="biz-h">Календарь занятости</div>
+
+      <div class="biz-h">${icon('i-store')} Как вас видят клиенты</div>
+      <div class="biz-listing">
+        <div class="lst-img">${icon('i-mic2')}</div>
+        <div class="lst-b">
+          <div class="lst-t">${SUPPLIER.title}</div>
+          <div class="lst-m"><span>${icon('i-star')} 4.9</span><span>Ведущий</span><span>${icon('i-map')} Алматы</span></div>
+          <div class="lst-p">от 250 000 ₸ / мероприятие</div>
+          <span class="lst-tag">● показывается в AI-подборках</span>
+        </div>
+      </div>
+
+      <div class="biz-h">${icon('i-calendar')} Календарь занятости</div>
       ${miniCalendar({ title: SUPPLIER.title }, 3)}
+
       <div class="biz-h">Новые заявки <span class="biz-badge">2 новые</span></div>
       <div class="biz-reqs">${reqs.map((r, ri) => `<div class="biz-req" data-r="${ri}">
-          <div class="biz-req-l"><div class="biz-req-n">${r.n}</div><div class="biz-req-d">${icon('i-calendar')} ${r.d}</div></div>
+          <div class="biz-req-l"><div class="biz-req-n">${r.n}</div><div class="biz-req-d">${icon('i-calendar')} ${r.d} · бюджет ${r.b}</div></div>
           <div class="biz-req-act"><button class="rq-ok" data-r="${ri}">Принять</button><button class="rq-no" data-r="${ri}">✕</button></div>
         </div>`).join('')}</div>
-      <div class="biz-h">Финансы</div>
+
+      <div class="biz-h">${icon('i-wallet')} Доходы и выплаты</div>
       <div class="biz-fin">
-        <div class="biz-fin-row"><span>Подтверждённые брони</span><b>9 событий</b></div>
-        <div class="biz-fin-row"><span>К выплате после события</span><b>3 150 000 ₸</b></div>
-        <div class="biz-fin-row"><span>Комиссия платформы</span><b>7%</b></div>
+        <div class="biz-fin-row"><span>Оборот за месяц</span><b>3 387 000 ₸</b></div>
+        <div class="biz-fin-row"><span>Комиссия EVENT AI</span><b class="pct">− 7%</b></div>
+        <div class="biz-fin-row"><span>К выплате после событий</span><b>3 150 000 ₸</b></div>
+        <div class="biz-fin-row"><span>Ближайшая выплата</span><b>18 августа</b></div>
       </div>
-      <p class="biz-note">Это <b>светлый кабинет партнёра</b> — вторая визуальная система EVENT AI. Клиент и партнёр работают в одной платформе: это и есть двусторонний маркетплейс.</p>
+
+      <div class="biz-h">${icon('i-bolt')} Продвижение</div>
+      <button class="biz-promo" id="bizPromo">
+        <div class="pr-ic">${icon('i-bolt')}</div>
+        <div class="pr-b"><div class="pr-t">Поднять профиль в подборках</div><div class="pr-d">Premium-размещение — до 3× больше заявок. Подписка от 15 000 ₸ / мес.</div></div>
+        <span class="pr-go">Подключить</span>
+      </button>
+
+      <p class="biz-note">Это <b>кабинет партнёра</b> — вторая сторона EVENT AI. Клиент и партнёр работают в одной платформе: заявки, календарь, брони и выплаты связаны. Это и есть <b>двусторонний маркетплейс</b> — и источник дохода: комиссия 7% + платное продвижение.</p>
     </div>`,
     onMount: (el) => {
       el.querySelectorAll('.rq-ok').forEach((b) => b.addEventListener('click', () => {
@@ -286,6 +320,7 @@ VIEWS.partner = () => {
         toast('Заявка принята · дата закреплена');
       }));
       el.querySelectorAll('.rq-no').forEach((b) => b.addEventListener('click', () => { b.closest('.biz-req').style.display = 'none'; }));
+      $('#bizPromo', el)?.addEventListener('click', () => toast('Demo · здесь подключается Premium-продвижение'));
     },
   };
 };
@@ -913,9 +948,18 @@ VIEWS.documents = () => {
 VIEWS.invitations = () => {
   const sc = S.scenario || SCENARIOS.wedding;
   S.invStyle = S.invStyle || (sc.national ? 'national' : 'classic');
-  const venue = (sc.vendors && sc.vendors.find((v) => /площад|ресторан|зал|концерт|спорт|студи|лофт/i.test(v.cat || '')) || {}).title || 'Банкетный зал «Жібек Жолы»';
-  const names = sc.national ? 'Айдана & Нұрлан' : (sc.key === 'corporate' ? 'Команда компании' : 'Айдана & Нұрлан');
-  const styles = [{ k: 'national', label: 'Национальный' }, { k: 'classic', label: 'Классика' }, { k: 'minimal', label: 'Минимал' }, { k: 'luxury', label: 'Luxury' }];
+  const k = sc.key || 'wedding';
+  const venueRaw = (sc.vendors && (sc.vendors.find((v) => /площад|ресторан|зал|концерт|спорт|студи|лофт/i.test(v.cat || '')) || {}).title) || '';
+  const venue = (venueRaw && !/[әғқңөұүһі]/i.test(venueRaw)) ? venueRaw : 'Банкетный зал «Алтын Сарай»';
+  let kicker = 'Приглашение', names = 'Дорогие гости', line = 'приглашаем вас на', event = '', closing = 'Будем рады видеть вас';
+  if (/corporate|forum|conference|state/.test(k)) {
+    names = 'Уважаемые коллеги'; line = 'приглашаем вас на'; event = sc.concept || 'торжественный вечер'; closing = 'Будем рады видеть вас';
+  } else if (/jubilee|birthday/.test(k)) {
+    names = 'Дорогие гости'; line = 'приглашаем вас разделить с нами'; event = 'наш праздник'; closing = 'Ждём вас в этот тёплый день';
+  } else {
+    kicker = 'Свадебное приглашение'; names = 'Алия & Тимур'; line = 'приглашают вас на свой праздник'; event = ''; closing = 'Будем счастливы видеть вас рядом';
+  }
+  const styles = [{ k: 'classic', label: 'Классика' }, { k: 'national', label: 'Этно' }, { k: 'minimal', label: 'Минимал' }, { k: 'luxury', label: 'Luxury' }];
   return {
     chrome: {
       title: 'Пригласительные', island: 'Подарок от EVENT AI',
@@ -928,13 +972,15 @@ VIEWS.invitations = () => {
       <div class="inv-stage">
         <div class="invite" id="invCard" data-style="${S.invStyle}">
           <span class="inv-orn inv-orn-1"></span><span class="inv-orn inv-orn-2"></span>
-          <div class="inv-kicker">Приглашение</div>
+          <div class="inv-kicker">${kicker}</div>
           <div class="inv-names">${names}</div>
-          <div class="inv-line">приглашают вас на</div>
-          <div class="inv-event">${sc.concept || sc.typeLabel || 'Торжество'}</div>
+          <div class="inv-line">${line}</div>
+          ${event ? `<div class="inv-event">${event}</div>` : ''}
+          <span class="inv-div"></span>
           <div class="inv-meta"><span>${icon('i-calendar')} ${sc.date}</span><span class="dotsep"></span><span>${icon('i-map')} ${sc.city}</span></div>
           <div class="inv-venue">${venue}</div>
-          <div class="inv-foot"><span class="inv-mk brandmark" id="invMk2"></span> создано в EVENT AI</div>
+          <div class="inv-closing">${closing}</div>
+          <div class="inv-foot"><span class="inv-mk brandmark" id="invMk2"></span> Создано в EVENT AI</div>
         </div>
       </div>
       <div class="inv-hint">${icon('i-spark')} Меняйте стиль — карточка перерисовывается мгновенно</div>
@@ -1159,13 +1205,20 @@ const WELCOME_I18N = {
 if (typeof I18N !== 'undefined' && !I18N.en) I18N.en = { pusk: 'START', greetingShort: 'Describe your event — or tap a few buttons.', guestsWord: 'guests' };
 function setLang(l) {
   S.lang = l;
-  document.querySelectorAll('#wlLang button').forEach((b) => b.classList.toggle('on', b.dataset.l === l));
+  const cur = $('#wlLangCur'); if (cur) cur.textContent = ({ ru: 'RU', kz: 'KZ', en: 'EN' })[l] || 'RU';
+  document.querySelectorAll('#wlLangMenu button').forEach((b) => b.classList.toggle('on', b.dataset.l === l));
   const dict = WELCOME_I18N[l] || WELCOME_I18N.ru;
   document.querySelectorAll('#welcome [data-i18n]').forEach((el) => {
     const k = el.dataset.i18n; if (dict[k] != null) el.innerHTML = dict[k];
   });
 }
-$('#wlLang')?.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setLang(b.dataset.l); });
+(function wireLang() {
+  const wrap = $('#wlLang'), btn = $('#wlLangBtn');
+  if (!wrap || !btn) return;
+  btn.addEventListener('click', (e) => { e.stopPropagation(); const open = wrap.classList.toggle('open'); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+  $('#wlLangMenu')?.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; setLang(b.dataset.l); wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); });
+  document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
+})();
 
 /* ---------- auto-demo (hands-free tour) ---------- */
 let autoOn = false;

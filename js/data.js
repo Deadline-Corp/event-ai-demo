@@ -224,18 +224,18 @@ const PKG_MULT = { STANDARD: 0.74, COMFORT: 0.88, PREMIUM: 1.0 };
 
 /* ---------- intake (пошаговый AI-фильтр по ТЗ#1, ~12 вопросов) ---------- */
 const INTAKE = [
-  { ai: ['Сәлеметсіз бе! Я EVENT AI.', 'Задам несколько коротких вопросов — и соберу мероприятие под ключ. По одному за раз.'] },
+  { ai: ['Здравствуйте! Я — EVENT AI.', 'Задам несколько коротких вопросов — и соберу мероприятие под ключ. По одному за раз.'] },
   { q: 'В какой стране мероприятие?', key: 'country', options: [
       { label: 'Казахстан' }, { label: 'Другая страна' } ] },
   { q: 'В каком городе?', key: 'city', options: [
       { label: 'Алматы' }, { label: 'Астана' }, { label: 'Шымкент' }, { label: 'Другой' } ] },
   { q: 'Что организуем?', key: 'type', options: [
-      { label: 'Свадьба / Той', scenario: 'wedding' },
-      { label: 'Қыз ұзату', scenario: 'wedding' },
+      { label: 'Свадьба', scenario: 'wedding' },
+      { label: 'Узату (проводы невесты)', scenario: 'wedding' },
       { label: 'Корпоратив', scenario: 'corporate' },
       { label: 'Юбилей', scenario: 'birthday' },
       { label: 'День рождения', scenario: 'birthday' },
-      { label: 'Сүндет той', scenario: 'birthday' },
+      { label: 'Сюндет той', scenario: 'birthday' },
       { label: 'Никах', scenario: 'wedding' },
       { label: 'Конференция', scenario: 'corporate' },
   ] },
