@@ -234,13 +234,13 @@ VIEWS.roleSelect = () => ({
         </div>
         <span class="role-go">${icon('i-arrow')}</span>
       </button>
+      <button class="role-admin" data-role="admin">${icon('i-shield')} <span>Панель администратора платформы</span> <svg class="ic"><use href="#i-arrow"/></svg></button>
       <div class="role-note">${icon('i-shield')} Демо · свободный режим, без регистрации</div>
       <div class="role-prod"><span class="role-prod-tag">В полной версии</span>выбор и переключение роли будут в личном кабинете пользователя. Здесь оба входа показаны рядом — для демонстрации.</div>
     </div>`,
   onMount: (el) => {
-    el.querySelectorAll('.role-card').forEach((c) => c.addEventListener('click', () => {
-      navigate(c.dataset.role === 'partner' ? 'partner' : 'chat');
-    }));
+    const go = { client: 'chat', partner: 'partner', admin: 'admin' };
+    el.querySelectorAll('[data-role]').forEach((c) => c.addEventListener('click', () => navigate(go[c.dataset.role] || 'chat')));
   },
 });
 
@@ -322,6 +322,105 @@ VIEWS.partner = () => {
       }));
       el.querySelectorAll('.rq-no').forEach((b) => b.addEventListener('click', () => { b.closest('.biz-req').style.display = 'none'; }));
       $('#bizPromo', el)?.addEventListener('click', () => toast('Demo · здесь подключается Premium-продвижение'));
+    },
+  };
+};
+
+/* ============================================================
+   VIEW: MAP (vendor network across Almaty)
+   ============================================================ */
+VIEWS.map = () => {
+  const cats = [
+    { k: 'Площадки', c: '#2C7BFF' }, { k: 'Ведущие', c: '#34D399' }, { k: 'Артисты', c: '#F5B544' },
+    { k: 'Декор', c: '#F472B6' }, { k: 'Фото / видео', c: '#22D3EE' }, { k: 'Техника', c: '#A78BFA' },
+  ];
+  const pins = [
+    { x: 200, y: 118, i: 0 }, { x: 168, y: 138, i: 1 }, { x: 232, y: 108, i: 2 }, { x: 150, y: 100, i: 4 },
+    { x: 250, y: 150, i: 3 }, { x: 188, y: 166, i: 5 }, { x: 212, y: 88, i: 0 }, { x: 128, y: 158, i: 1 },
+    { x: 272, y: 122, i: 2 }, { x: 160, y: 188, i: 3 }, { x: 242, y: 184, i: 4 }, { x: 108, y: 128, i: 5 },
+    { x: 292, y: 158, i: 0 }, { x: 204, y: 202, i: 1 }, { x: 300, y: 98, i: 2 }, { x: 120, y: 92, i: 0 },
+    { x: 264, y: 196, i: 5 }, { x: 178, y: 112, i: 3 },
+  ];
+  return {
+    chrome: {
+      title: 'Карта подрядчиков', island: 'Сеть · Алматы', back: false,
+      action: `<button class="btn btn-primary" id="mapStart">${icon('i-spark')} Запустить демо</button>`,
+    },
+    html: `<div class="map-view">
+      <div class="map-head"><div class="map-h-t">Сеть подрядчиков · Алматы</div><div class="map-h-s">Вся индустрия мероприятий — в одной платформе</div></div>
+      <div class="map-stats">
+        <div class="ms"><b>1 240</b><span>подрядчиков</span></div>
+        <div class="ms"><b>11</b><span>категорий</span></div>
+        <div class="ms"><b>8</b><span>районов</span></div>
+      </div>
+      <div class="map-canvas">
+        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="mbg" cx="50%" cy="40%" r="72%"><stop offset="0%" stop-color="#0c1730"/><stop offset="100%" stop-color="#060a14"/></radialGradient></defs>
+          <rect width="400" height="280" fill="url(#mbg)"/>
+          <g stroke="rgba(255,255,255,0.05)" stroke-width="1">
+            <line x1="0" y1="70" x2="400" y2="60"/><line x1="0" y1="140" x2="400" y2="135"/><line x1="0" y1="210" x2="400" y2="205"/>
+            <line x1="100" y1="0" x2="110" y2="280"/><line x1="200" y1="0" x2="205" y2="280"/><line x1="300" y1="0" x2="298" y2="280"/>
+          </g>
+          <path d="M40,150 Q140,128 210,160 T380,150" fill="none" stroke="rgba(44,123,255,0.18)" stroke-width="2"/>
+          <path d="M0,250 L60,224 L110,238 L165,206 L215,232 L268,206 L330,230 L400,210 L400,280 L0,280 Z" fill="rgba(44,123,255,0.07)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <text x="392" y="272" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(255,255,255,0.28)">Заилийский Алатау</text>
+          ${pins.map((p, idx) => `<g class="pin${idx % 4 === 0 ? ' pulse' : ''}" style="--pd:${(idx * 0.18).toFixed(2)}s">
+            <circle cx="${p.x}" cy="${p.y}" r="12" fill="${cats[p.i].c}" opacity="0.16"/>
+            <circle cx="${p.x}" cy="${p.y}" r="4.6" fill="${cats[p.i].c}"/>
+            <circle cx="${p.x}" cy="${p.y}" r="1.7" fill="#fff" opacity="0.92"/>
+          </g>`).join('')}
+        </svg>
+      </div>
+      <div class="map-legend">${cats.map((c) => `<span class="lg"><i style="background:${c.c}"></i>${c.k}</span>`).join('')}</div>
+      <p class="map-note">В демо — иллюстративная карта. В продукте: реальные подрядчики на карте города, фильтр по категории, бюджету и свободной дате.</p>
+    </div>`,
+    onMount: () => { $('#mapStart')?.addEventListener('click', () => navigate('roleSelect')); },
+  };
+};
+
+/* ============================================================
+   VIEW: ADMIN (3rd side — platform control teaser)
+   ============================================================ */
+VIEWS.admin = () => {
+  const queue = [
+    { n: 'Ресторан «Алтын Орда»', c: 'Площадка · до 250 гостей' },
+    { n: 'Ведущий — Арман Бейсенов', c: 'Ведущий · каз/рус' },
+    { n: 'Декор-студия «Флёр»', c: 'Оформление и флористика' },
+  ];
+  return {
+    chrome: { title: 'Админ-панель', island: 'Платформа · контроль' },
+    html: `<div class="admin-view">
+      <div class="adm-top">
+        <div class="adm-id"><div class="adm-av">${icon('i-shield')}</div><div><div class="adm-name">EVENT AI · Платформа</div><div class="adm-role">Администратор · модерация и аналитика</div></div></div>
+        <span class="adm-live"><span class="island-dot"></span>онлайн</span>
+      </div>
+      <div class="adm-kpi">
+        <div class="adm-stat"><div class="av">184 млн&nbsp;₸</div><div class="ak">Оборот платформы / год</div></div>
+        <div class="adm-stat"><div class="av">1 240</div><div class="ak">Активных подрядчиков</div></div>
+        <div class="adm-stat"><div class="av">320</div><div class="ak">Броней за месяц</div></div>
+        <div class="adm-stat hot"><div class="av">12,9 млн&nbsp;₸</div><div class="ak">Выручка платформы (7%)</div></div>
+      </div>
+      <div class="adm-h">${icon('i-shield')} Модерация карточек <span class="adm-badge">2 новые</span></div>
+      <div class="adm-queue">${queue.map((q, i) => `<div class="adm-row" data-i="${i}">
+          <div class="adm-row-l"><div class="adm-row-n">${q.n}</div><div class="adm-row-c">${q.c}</div></div>
+          <div class="adm-row-act"><button class="adm-ok" data-i="${i}">Одобрить</button><button class="adm-no" data-i="${i}">✕</button></div>
+        </div>`).join('')}</div>
+      <div class="adm-h">${icon('i-spark')} Контроль качества</div>
+      <div class="adm-fin">
+        <div class="adm-fin-row"><span>Споры в работе</span><b>2</b></div>
+        <div class="adm-fin-row"><span>Жалобы за месяц</span><b>4</b></div>
+        <div class="adm-fin-row"><span>Средний рейтинг подрядчиков</span><b>4.8 ★</b></div>
+        <div class="adm-fin-row"><span>Категорий услуг</span><b>11</b></div>
+      </div>
+      <p class="adm-note">Это <b>третья сторона платформы</b> — модерация карточек до публикации, аналитика оборота и выручки, контроль качества и споров. В демо — иллюстративно.</p>
+    </div>`,
+    onMount: (el) => {
+      el.querySelectorAll('.adm-ok').forEach((b) => b.addEventListener('click', () => {
+        const r = b.closest('.adm-row'); r.classList.add('done');
+        r.querySelector('.adm-row-act').innerHTML = '<span class="adm-done">✓ опубликовано</span>';
+        toast('Карточка одобрена и опубликована');
+      }));
+      el.querySelectorAll('.adm-no').forEach((b) => b.addEventListener('click', () => { b.closest('.adm-row').style.display = 'none'; toast('Карточка отклонена'); }));
     },
   };
 };
@@ -467,7 +566,13 @@ async function startMatching() {
     <div class="title">AI собирает мероприятие</div>
     <div class="pct" id="pct">0%</div>
     <div class="steps" id="steps">${LOADING_STEPS.map((t, i) =>
-      `<div class="step" data-i="${i}"><span class="dot">${icon('i-check')}</span><span>${t}</span></div>`).join('')}</div>`;
+      `<div class="step" data-i="${i}"><span class="dot">${icon('i-check')}</span><span>${t}</span></div>`).join('')}</div>
+    <div class="ai-scan" id="aiScan">
+      <div class="scan-row"><span class="sk">Просканировано подрядчиков</span><span class="sv" id="scanTotal">0</span></div>
+      <div class="scan-row"><span class="sk">Отклонено — заняты на дату</span><span class="sv warn" id="scanDate">0</span></div>
+      <div class="scan-row"><span class="sk">Отклонено — вне бюджета</span><span class="sv warn" id="scanBudget">0</span></div>
+      <div class="scan-row"><span class="sk">Отобрано в подборку</span><span class="sv ok" id="scanPick">0</span></div>
+    </div>`;
   $('#screen').appendChild(ov);
   buildSpiral(ov.querySelector('.mark'), { color: '#fff' });
   S.scenario.vendors.forEach((v) => { const im = new Image(); im.src = IMG(v.seed); });
@@ -478,6 +583,9 @@ async function startMatching() {
     const st = steps[i];
     st.classList.add('active');
     islandText.textContent = `Шаг ${i + 1}/${steps.length}`;
+    if (i === 0) { countTo($('#scanTotal', ov), 1240, 700); countTo($('#scanDate', ov), 47, 700); }
+    else if (i === 1) countTo($('#scanBudget', ov), 23, 600);
+    else if (i === 2) countTo($('#scanPick', ov), S.scenario.vendors.length, 600);
     const sp = document.createElement('span'); sp.className = 'spin-mini'; st.appendChild(sp);
     const dur = 540 + Math.random() * 220, t0 = performance.now();
     await new Promise((res) => {
@@ -582,6 +690,7 @@ VIEWS.results = () => {
         <div class="av"><div class="brandmark mark" id="bnMark"></div></div>
         <p>Под ваш бриф (<b>${sc.guestsLabel}</b>, бюджет <b>${S.answers.budget || '—'}</b>) AI собрал подборку по направлениям, всё свободно на <b>${sc.date}</b>. ${sc.fits ? `Итог <b>${fmt(sc.estimate.total)} ₸</b> — в бюджете.` : `Полный набор <b>${fmt(sc.estimate.total)} ₸</b> — чуть выше бюджета, уберите 1–2 позиции.`}</p>
       </div>
+      <div class="ai-savings">${icon('i-bolt')}<div class="sv-b"><span class="sv-t">AI подобрал на ~18% выгоднее рынка</span><span class="sv-d">Экономия ≈ <b>${fmt(Math.round(num(sc.estimate.total) * 0.18))} ₸</b> против ручной сборки по средним ценам</span></div></div>
       <div class="blocks-hint">${icon('i-spark')} Каждый блок открывается отдельно — нажмите, чтобы развернуть</div>
       ${vendorBlocks}${docBlocks}`,
     onMount: (el) => {
@@ -1155,18 +1264,20 @@ function showWelcome() {
   const cv = w.querySelector('.val[data-count]');
   if (cv) { cv.textContent = '0'; setTimeout(() => countTo(cv, +cv.dataset.count, 1000), 820); }
 }
-function enterApp() {
+function enterApp(target) {
+  if (typeof target !== 'string') target = 'splash';
   const w = $('#welcome'); if (!w) return;
   w.querySelectorAll('.lrow').forEach(r => r.classList.add('on'));
   w.classList.add('is-gone');
   document.body.dataset.stage = 'app';
   if (stage) stage.classList.add('canvas-in');
   let done = false;
-  const finish = () => { if (done) return; done = true; w.style.display = 'none'; if (stage) stage.classList.remove('canvas-in'); navigate('splash'); };
+  const finish = () => { if (done) return; done = true; w.style.display = 'none'; if (stage) stage.classList.remove('canvas-in'); navigate(target); };
   w.addEventListener('transitionend', finish, { once: true });
   setTimeout(finish, 740);
 }
 $('#enterBtn')?.addEventListener('click', enterApp);
+$('#mapBtn')?.addEventListener('click', () => enterApp('map'));
 
 /* ---------- theme (light / dark) ---------- */
 function markColor(c) { return (c === '#fff' && document.documentElement.dataset.theme === 'light') ? '#2b3650' : c; }
@@ -1212,6 +1323,12 @@ function setLang(l) {
   document.querySelectorAll('#welcome [data-i18n]').forEach((el) => {
     const k = el.dataset.i18n; if (dict[k] != null) el.innerHTML = dict[k];
   });
+  const note = $('#wlLangNote');
+  if (note) {
+    note.hidden = (l === 'ru');
+    note.textContent = l === 'kz' ? 'Демо өту — орыс тілінде. Толық KZ / EN локализациясы — дайын қосымшада.'
+      : l === 'en' ? 'The demo walkthrough is in Russian. Full KZ / EN localization ships in the production app.' : '';
+  }
 }
 (function wireLang() {
   const wrap = $('#wlLang'), btn = $('#wlLangBtn');
@@ -1243,7 +1360,7 @@ async function autoTap(sel, delay = 700) {
   await sleep(delay); if (!autoOn) return null;
   pulseAt(e); await sleep(140); e.click(); return e;
 }
-function stopAuto() { autoOn = false; document.body.classList.remove('autoplay'); $('#autoHint')?.remove(); }
+function stopAuto() { autoOn = false; document.body.classList.remove('autoplay'); $('#autoHint')?.remove(); $('#autoCap')?.remove(); }
 async function autoPlay() {
   if (autoOn) return; autoOn = true;
   S.intakeDone = false; S.answers = {}; S.scenario = null; S.stack = []; S.removed = new Set();
@@ -1251,24 +1368,33 @@ async function autoPlay() {
   const hint = document.createElement('div'); hint.id = 'autoHint'; hint.className = 'auto-hint';
   hint.innerHTML = `<span class="dot"></span> АВТО-ДЕМО · коснитесь экрана, чтобы взять управление`;
   $('#screen').appendChild(hint);
+  const capEl = document.createElement('div'); capEl.id = 'autoCap'; capEl.className = 'auto-cap';
+  $('#screen').appendChild(capEl);
+  const cap = (n, t) => { if (!autoOn) return; capEl.innerHTML = `<span class="ac-n">${n}</span><span class="ac-t">${t}</span>`; capEl.classList.remove('show'); void capEl.offsetWidth; capEl.classList.add('show'); };
   enterApp();
+  cap('01', 'Клиент описывает мероприятие в чате с AI');
   await autoTap('.role-card[data-role="client"]', 1000);
+  cap('01', 'AI задаёт по одному вопросу и сужает рынок под бриф');
   for (let q = 0; q < 14 && autoOn; q++) { if (document.querySelector('#puskBtn')) break; await autoTap('.chat-chips .chip', 520); }
+  cap('02', 'AI сравнивает 1 240 подрядчиков и собирает подборку');
   await autoTap('#puskBtn', 650);
-  if (await waitFor('.vcard') && autoOn) await sleep(1500);
+  if (await waitFor('.vcard') && autoOn) { cap('03', 'Готово за секунды: подрядчики, смета, сценарий, тайминг'); await sleep(1700); }
   await autoTap('#toCart', 700);
   await autoTap('#toPkg', 850);
+  cap('04', 'Клиент выбирает уровень мероприятия');
   const pk = autoOn && await waitFor('.pkg[data-k="PREMIUM"]'); if (pk && autoOn) { await sleep(600); pulseAt(pk); pk.click(); }
   await autoTap('#genBtn', 700);
-  if (await waitFor('.est-row') && autoOn) await sleep(1700);
+  if (await waitFor('.est-row') && autoOn) { cap('05', 'AI формирует смету, сценарий и тайминг под формат'); await sleep(1700); }
   const tabs = [...document.querySelectorAll('.tab')];
   for (let i = 1; i < tabs.length && autoOn; i++) { await sleep(950); pulseAt(tabs[i]); tabs[i].click(); }
   await sleep(800); await autoTap('#toDocs', 600);
+  cap('06', 'Бронирование в один тап · депозит 50 000 ₸');
   await autoTap('#toBook', 800);
   const pay = autoOn && await waitFor('.pay'); if (pay && autoOn) { await sleep(700); pulseAt(pay); pay.click(); }
-  if (await waitFor('.success') && autoOn) await sleep(2200);
+  if (await waitFor('.success') && autoOn) { cap('06', 'Дата закреплена. Комиссия платформы — 7%'); await sleep(2200); }
   await autoTap('#invBtn', 700);
   if (await waitFor('.invite') && autoOn) {
+    cap('★', 'Бонус: пригласительные — в подарок от EVENT AI');
     await sleep(1300);
     const seg = document.querySelectorAll('.inv-seg');
     if (seg[2] && autoOn) { pulseAt(seg[2]); seg[2].click(); await sleep(1300); }
