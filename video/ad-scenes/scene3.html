@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Scene 3 — Опишите идею</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #04060B; font-family: 'Space Grotesk', sans-serif; }
+  .scene { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+
+  .bg {
+    position: absolute; inset: 0;
+    background-image: url('file:///D:/event-ai/video/gen/s2-solution.png');
+    background-size: cover;
+    background-position: center 20%;
+    animation: bgZoom 4s ease-out forwards;
+  }
+  @keyframes bgZoom {
+    0%   { transform: scale(1.06); }
+    100% { transform: scale(1.0); }
+  }
+
+  .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(4,6,11,0.40) 0%,
+      rgba(4,6,11,0.05) 30%,
+      rgba(4,6,11,0.30) 55%,
+      rgba(4,6,11,0.90) 80%,
+      rgba(4,6,11,0.99) 100%
+    );
+  }
+
+  /* Blue accent glow behind phone area */
+  .glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(44,123,255,0.18) 0%, transparent 70%);
+    top: 35%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: glowPulse 2.5s ease-in-out infinite alternate;
+  }
+  @keyframes glowPulse {
+    0%   { opacity: 0.5; transform: translate(-50%,-50%) scale(0.9); }
+    100% { opacity: 1;   transform: translate(-50%,-50%) scale(1.05); }
+  }
+
+  .logo-mark {
+    position: absolute; top: 72px; right: 64px;
+    width: 56px; height: 56px;
+    opacity: 0; animation: fadeIn 0.6s 0.2s ease-out forwards;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .scene-tag {
+    position: absolute; top: 84px; left: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 300; letter-spacing: 0.18em;
+    color: rgba(90,160,255,0.7);
+    opacity: 0; animation: fadeIn 0.5s 0.3s ease-out forwards;
+  }
+
+  /* Chat bubble UI mockup — top section */
+  .chat-bubble {
+    position: absolute;
+    top: 900px; left: 72px; right: 72px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(90,160,255,0.25);
+    border-radius: 20px;
+    padding: 28px 36px;
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: bubbleIn 0.7s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  @keyframes bubbleIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .bubble-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; color: rgba(90,160,255,0.8); letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .bubble-text {
+    font-size: 28px; color: rgba(238,241,248,0.75); line-height: 1.4; font-weight: 400;
+  }
+  .cursor {
+    display: inline-block;
+    width: 2px; height: 28px;
+    background: #5AA0FF;
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s 1.2s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0; }
+  }
+
+  .content {
+    position: absolute; bottom: 160px; left: 0; right: 0;
+    padding: 0 72px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 400; letter-spacing: 0.24em;
+    color: #5AA0FF; text-transform: uppercase;
+    clip-path: inset(0 100% 0 0);
+    animation: clipReveal 0.7s 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+    margin-bottom: 28px;
+  }
+  @keyframes clipReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0% 0 0); }
+  }
+
+  .headline { line-height: 1.05; }
+  .headline .line {
+    display: block;
+    font-size: 88px; font-weight: 700;
+    color: #EEF1F8; letter-spacing: -0.025em;
+    overflow: hidden;
+  }
+  .line-inner {
+    display: block; opacity: 0; transform: translateY(48px);
+  }
+  .headline .line:nth-child(1) .line-inner { animation: slideUp 0.6s 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .headline .line:nth-child(2) .line-inner { animation: slideUp 0.6s 1.05s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(48px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .headline .accent { color: #5AA0FF; }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="glow"></div>
+
+  <img class="logo-mark" src="file:///D:/event-ai/assets/mark-light.png" alt="EVENT AI">
+  <div class="scene-tag">03 / 07</div>
+
+  <div class="chat-bubble">
+    <div class="bubble-label">// ваш запрос</div>
+    <div class="bubble-text">Нужен корпоратив на 80 человек в лофте<span class="cursor"></span></div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">Решение</div>
+    <div class="headline">
+      <span class="line"><span class="line-inner">Опишите идею —</span></span>
+      <span class="line"><span class="line-inner"><span class="accent">AI соберёт</span> всё</span></span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

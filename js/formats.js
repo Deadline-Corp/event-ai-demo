@@ -744,4 +744,4 @@ const TYPE_OPTIONS = [
 /* ---------- аугментация при загрузке ---------- */
 if (typeof V !== 'undefined') Object.assign(V, V_EXT);
 if (typeof SCENARIOS !== 'undefined') Object.assign(SCENARIOS, FORMATS);
-if (typeof INTAKE !== 'undefined' && INTAKE[1]) INTAKE[1].options = TYPE_OPTIONS;
+if (typeof INTAKE !== 'undefined') { var __ts = INTAKE.find(function (s) { return s && s.key === 'type'; }); if (__ts) __ts.options = TYPE_OPTIONS; }

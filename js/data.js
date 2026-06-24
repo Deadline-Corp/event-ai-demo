@@ -222,9 +222,13 @@ const SCENARIOS = {
 /* package price multipliers (relative to full estimate) */
 const PKG_MULT = { STANDARD: 0.74, COMFORT: 0.88, PREMIUM: 1.0 };
 
-/* ---------- intake (4 questions, composer keywords) ---------- */
+/* ---------- intake (пошаговый AI-фильтр по ТЗ#1, ~12 вопросов) ---------- */
 const INTAKE = [
-  { ai: ['Сәлеметсіз бе! Я EVENT AI.', 'Опишите событие — или ответьте парой кнопок. Соберу под ключ за минуту.'] },
+  { ai: ['Сәлеметсіз бе! Я EVENT AI.', 'Задам несколько коротких вопросов — и соберу мероприятие под ключ. По одному за раз.'] },
+  { q: 'В какой стране мероприятие?', key: 'country', options: [
+      { label: 'Казахстан' }, { label: 'Другая страна' } ] },
+  { q: 'В каком городе?', key: 'city', options: [
+      { label: 'Алматы' }, { label: 'Астана' }, { label: 'Шымкент' }, { label: 'Другой' } ] },
   { q: 'Что организуем?', key: 'type', options: [
       { label: 'Свадьба / Той', scenario: 'wedding' },
       { label: 'Қыз ұзату', scenario: 'wedding' },
@@ -235,15 +239,24 @@ const INTAKE = [
       { label: 'Никах', scenario: 'wedding' },
       { label: 'Конференция', scenario: 'corporate' },
   ] },
+  { q: 'Когда планируете?', key: 'date', options: [
+      { label: 'Через месяц' }, { label: 'Через 2–3 месяца' }, { label: 'Через полгода' }, { label: 'Дата уже выбрана' } ] },
   { q: 'Сколько гостей ожидаете?', key: 'guests', options: [
-      { label: 'до 50' }, { label: '≈ 80' }, { label: '≈ 150' }, { label: '200+' },
-  ] },
+      { label: 'до 50' }, { label: '≈ 80' }, { label: '≈ 150' }, { label: '200+' } ] },
   { q: 'Какой бюджет закладываете?', key: 'budget', options: [
-      { label: 'до 2 млн ₸' }, { label: '3–5 млн ₸' }, { label: '5–8 млн ₸' }, { label: '8 млн+ ₸' },
-  ] },
-  { q: 'В каком стиле?', key: 'style', options: [
-      { label: 'Национальный' }, { label: 'Микс' }, { label: 'Европейский' }, { label: 'Luxury' },
-  ] },
+      { label: 'до 2 млн ₸' }, { label: '3–5 млн ₸' }, { label: '5–8 млн ₸' }, { label: '8 млн+ ₸' } ] },
+  { q: 'Площадка уже выбрана?', key: 'venue', options: [
+      { label: 'Нужен подбор' }, { label: 'Уже выбрана' } ] },
+  { q: 'Какие услуги нужны?', key: 'services', options: [
+      { label: 'Всё под ключ' }, { label: 'Выберу точечно' } ] },
+  { q: 'Нужен сценарий мероприятия?', key: 'needScenario', options: [
+      { label: 'Да, нужен' }, { label: 'Не нужен' } ] },
+  { q: 'Подготовить смету?', key: 'needSmeta', options: [
+      { label: 'Да, смету' }, { label: 'Не нужно' } ] },
+  { q: 'Нужны пригласительные?', key: 'needInvites', options: [
+      { label: 'Да, бесплатно' }, { label: 'Не нужны' } ] },
+  { q: 'Помочь с бронированием?', key: 'needBooking', options: [
+      { label: 'Да, помогите' }, { label: 'Забронирую сам' } ] },
 ];
 
 /* free-text -> chip matcher (NLU illusion) */

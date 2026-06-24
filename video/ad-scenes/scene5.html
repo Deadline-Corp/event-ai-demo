@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Scene 5 — Смета · сценарий · тайминг</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #04060B; font-family: 'Space Grotesk', sans-serif; }
+  .scene { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+
+  .bg {
+    position: absolute; inset: 0;
+    background-image: url('file:///D:/event-ai/assets/img/decor.jpg');
+    background-size: cover;
+    background-position: center 20%;
+    animation: bgFloat 4s ease-out forwards;
+  }
+  @keyframes bgFloat {
+    0%   { transform: scale(1.07) translateY(-8px); }
+    100% { transform: scale(1.0) translateY(0); }
+  }
+
+  .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(4,6,11,0.45) 0%,
+      rgba(4,6,11,0.10) 20%,
+      rgba(4,6,11,0.20) 38%,
+      rgba(4,6,11,0.75) 55%,
+      rgba(4,6,11,0.96) 72%,
+      rgba(4,6,11,1.0) 100%
+    );
+  }
+
+  .logo-mark {
+    position: absolute; top: 72px; right: 64px;
+    width: 56px; height: 56px;
+    opacity: 0; animation: fadeIn 0.6s 0.2s ease-out forwards;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .scene-tag {
+    position: absolute; top: 84px; left: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 300; letter-spacing: 0.18em;
+    color: rgba(90,160,255,0.7);
+    opacity: 0; animation: fadeIn 0.5s 0.3s ease-out forwards;
+  }
+
+  .bottom-block {
+    position: absolute;
+    top: 920px;
+    left: 0; right: 0; bottom: 0;
+    padding: 0 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 400; letter-spacing: 0.24em;
+    color: #5AA0FF; text-transform: uppercase;
+    clip-path: inset(0 100% 0 0);
+    animation: clipReveal 0.7s 0.01s cubic-bezier(0.22,1,0.36,1) forwards;
+    margin-bottom: 20px;
+  }
+  @keyframes clipReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0% 0 0); }
+  }
+
+  .headline {
+    font-size: 72px; font-weight: 700;
+    color: #EEF1F8; letter-spacing: -0.025em;
+    line-height: 1.0;
+    opacity: 0; transform: translateY(28px);
+    animation: slideUp 0.65s 0.01s cubic-bezier(0.22,1,0.36,1) forwards;
+    margin-bottom: 32px;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .dot { color: #2C7BFF; margin: 0 10px; }
+
+  .pillar {
+    display: flex; align-items: center; gap: 28px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(90,160,255,0.15);
+    /* animated */
+  }
+  .pillar:nth-child(1) { animation: pillarIn 0.55s 0.01s cubic-bezier(0.22,1,0.36,1) both; }
+  .pillar:nth-child(2) { animation: pillarIn 0.55s 0.01s cubic-bezier(0.22,1,0.36,1) both; }
+  .pillar:nth-child(3) { animation: pillarIn 0.55s 0.01s cubic-bezier(0.22,1,0.36,1) both; }
+
+  @keyframes pillarIn {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .pillar-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 42px; font-weight: 300;
+    color: rgba(44,123,255,0.4);
+    line-height: 1; min-width: 48px;
+  }
+  .pillar-title {
+    font-size: 40px; font-weight: 700; color: #EEF1F8;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .pillar-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px; color: rgba(238,241,248,0.42);
+    margin-top: 4px;
+  }
+  .pillar-check {
+    margin-left: auto; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid rgba(44,123,255,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #5AA0FF;
+  }
+  .pillar:nth-child(1) .pillar-check { animation: checkIn 0.3s 0.01s ease-out forwards; }
+  .pillar:nth-child(2) .pillar-check { animation: checkIn 0.3s 0.01s ease-out forwards; }
+  .pillar:nth-child(3) .pillar-check { animation: checkIn 0.3s 0.01s ease-out forwards; }
+  @keyframes checkIn {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+
+  <img class="logo-mark" src="file:///D:/event-ai/assets/mark-light.png" alt="EVENT AI">
+  <div class="scene-tag">05 / 07</div>
+
+  <div class="bottom-block">
+    <div class="eyebrow">Всё включено</div>
+    <div class="headline">Смета<span class="dot">·</span>сценарий<span class="dot">·</span>тайминг</div>
+
+    <div class="pillar">
+      <div class="pillar-num">01</div>
+      <div>
+        <div class="pillar-title">Смета</div>
+        <div class="pillar-desc">Бюджет под ваш запрос</div>
+      </div>
+      <div class="pillar-check">✓</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02</div>
+      <div>
+        <div class="pillar-title">Сценарий</div>
+        <div class="pillar-desc">Программа вечера</div>
+      </div>
+      <div class="pillar-check">✓</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03</div>
+      <div>
+        <div class="pillar-title">Тайминг</div>
+        <div class="pillar-desc">Минута за минутой</div>
+      </div>
+      <div class="pillar-check">✓</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -996,3 +996,26 @@ html[data-theme="light"] .inv-seg.sel{color:var(--accent)}
 .wl-logo{height:46px;width:auto;max-width:240px;object-fit:contain;margin-bottom:24px;
   filter:drop-shadow(0 8px 26px rgba(44,123,255,.3));opacity:0;animation:fadeUp .7s var(--ease) .12s both}
 @media(max-width:1019px){.wl-logo{height:40px}}
+
+/* ============================================================ RESULTS — 11 сворачиваемых блоков */
+.blocks-hint{display:flex;align-items:center;gap:7px;margin:8px 2px 12px;font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.04em;text-transform:uppercase}
+.blocks-hint .ic{width:13px;height:13px;color:var(--accent-2)}
+.cat-block{border-radius:var(--r-md);border:1px solid var(--hair);background:var(--ink);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh-card),inset 0 1px 0 rgba(255,255,255,.05);animation:cardIn .5s var(--ease) both}
+.cat-block-head{display:flex;align-items:center;justify-content:space-between;width:100%;padding:15px 15px;text-align:left;transition:background .2s var(--ease);min-height:52px}
+.cat-block-head:hover{background:var(--surface)}
+.cat-block-head:active{background:var(--surface-2)}
+.cbh-l{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.cbh-l .ic{width:16px;height:16px;color:var(--accent-2)}
+.cbh-r{display:flex;align-items:center;gap:11px;flex:none}
+.cbh-count{font-family:var(--mono);font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.cbh-count.hot{color:var(--accent-2)}
+.cbh-chev{width:15px;height:15px;color:var(--text-3);transform:rotate(90deg);transition:transform .3s var(--spring)}
+.cat-block.open .cbh-chev{transform:rotate(-90deg);color:var(--accent-2)}
+.cat-block-body{max-height:0;overflow:hidden;transition:max-height .45s var(--ease);padding:0 13px}
+.cat-block.open>.cat-block-body{max-height:5000px;padding:2px 13px 13px}
+.cat-block-body .vcard{margin-bottom:10px}
+.cat-block-body .vcard:last-child{margin-bottom:0}
+.block-empty{padding:12px 4px;font-size:12.5px;color:var(--text-3);display:flex;align-items:center;gap:8px;line-height:1.45}
+.block-empty .ic{width:14px;height:14px;color:var(--accent-2);flex:none}
+.block-note{padding:12px 4px;font-size:13px;color:var(--text-2);line-height:1.55}
+.block-note b{color:var(--text);font-variant-numeric:tabular-nums}

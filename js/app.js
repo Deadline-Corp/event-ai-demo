@@ -334,7 +334,7 @@ function scrollChat(box) {
 
 function applyAnswer(key, label) {
   S.answers[key] = label;
-  if (key === 'type') { const o = INTAKE[1].options.find((x) => x.label === label); if (o && o.scenario) S.scenario = SCENARIOS[o.scenario]; }
+  if (key === 'type') { const ts = INTAKE.find((s) => s.key === 'type'); const o = ts && ts.options.find((x) => x.label === label); if (o && o.scenario) S.scenario = SCENARIOS[o.scenario]; }
   if (key === 'style') S.styleVariant = label === 'Национальный' ? 'Нац.' : label === 'Европейский' ? 'Европа' : label === 'Luxury' ? 'Luxury' : 'Микс';
 }
 function askStep(box, step) {
@@ -468,12 +468,11 @@ async function startMatching() {
 VIEWS.results = () => {
   const sc = S.scenario;
   S.favorites = S.favorites || new Set();
-  const cards = sc.vendors.map((v, i) => {
+  const vcard = (v, i) => {
     const added = !S.removed.has(i);
     const fav = S.favorites.has(i);
     const rh = v.reasonFull.replace(v.matchToken, `<b>${v.matchToken}</b>`);
-    return `<div class="cat-label">${icon(v.icon)} ${v.cat}</div>
-      <div class="vcard" data-i="${i}" style="animation-delay:${i * 70}ms">
+    return `<div class="vcard" data-i="${i}" style="animation-delay:${i * 60}ms">
         <div class="media"><img src="${IMG(v.seed)}" alt="${v.title}" loading="lazy"/>
           <span class="badge"><span class="dot"></span>свободно ${sc.date}</span>
           <button class="fav ${fav ? 'on' : ''}" data-fav="${i}" aria-label="В избранное">${icon('i-heart')}</button>
@@ -496,7 +495,47 @@ VIEWS.results = () => {
           </div>
         </div>
       </div>`;
+  };
+  const blockOf = (cat) => {
+    const c = (cat || '').toLowerCase();
+    if (/ресторан|площад|зал|лофт|концерт|спорт|студи|конференц|кейтеринг|фуд|банкет/.test(c)) return 'venue';
+    if (/ведущ|тамада|модератор|announcer|акын|спикер|молла|имам/.test(c)) return 'host';
+    if (/балет/.test(c)) return 'ballet';
+    if (/live|band|dj|музык|домбр/.test(c)) return 'band';
+    if (/шоу/.test(c)) return 'show';
+    if (/артист|звезд/.test(c)) return 'artist';
+    if (/фото|видео|медиа/.test(c)) return 'photo';
+    if (/декор|оформл|флорист|костюм/.test(c)) return 'decor';
+    return 'tech';
+  };
+  const BLOCKS = [
+    { k: 'venue', label: 'Рестораны / площадки', icon: 'i-map' },
+    { k: 'host', label: 'Ведущие', icon: 'i-users' },
+    { k: 'artist', label: 'Артисты / звёзды', icon: 'i-bolt' },
+    { k: 'ballet', label: 'Show-ballet', icon: 'i-spark' },
+    { k: 'band', label: 'Live band / DJ', icon: 'i-music' },
+    { k: 'show', label: 'Шоу-программа', icon: 'i-spark' },
+    { k: 'photo', label: 'Фото / видео', icon: 'i-pres' },
+    { k: 'decor', label: 'Оформление', icon: 'i-star' },
+    { k: 'tech', label: 'Техника', icon: 'i-bolt' },
+  ];
+  const byBlock = {};
+  sc.vendors.forEach((v, i) => { const b = blockOf(v.cat); (byBlock[b] = byBlock[b] || []).push(i); });
+  const vendorBlocks = BLOCKS.map((B, bi) => {
+    const idxs = byBlock[B.k] || [];
+    const has = idxs.length > 0;
+    const count = has ? `${idxs.length} ${idxs.length === 1 ? 'вариант' : 'варианта'}` : 'по запросу';
+    const body = has ? idxs.map((i) => vcard(sc.vendors[i], i)).join('')
+      : `<div class="block-empty">${icon('i-spark')} AI подберёт под ваш формат при необходимости</div>`;
+    return `<div class="cat-block ${has ? 'open' : ''}" style="animation-delay:${bi * 40}ms">
+        <button class="cat-block-head" type="button"><span class="cbh-l">${icon(B.icon)} ${B.label}</span><span class="cbh-r"><span class="cbh-count ${has ? 'hot' : ''}">${count}</span><svg class="ic cbh-chev"><use href="#i-arrow"/></svg></span></button>
+        <div class="cat-block-body">${body}</div>
+      </div>`;
   }).join('');
+  const scnPreview = (sc.scenario || []).map((b) => b.title).join(' · ');
+  const docBlocks = `
+      <div class="cat-block"><button class="cat-block-head" type="button"><span class="cbh-l">${icon('i-doc')} Сценарий</span><span class="cbh-r"><span class="cbh-count hot">готов</span><svg class="ic cbh-chev"><use href="#i-arrow"/></svg></span></button><div class="cat-block-body"><div class="block-note">${scnPreview || 'AI сформирует сценарий под формат'} — полностью на шаге «Проект».</div></div></div>
+      <div class="cat-block"><button class="cat-block-head" type="button"><span class="cbh-l">${icon('i-sheet')} Смета</span><span class="cbh-r"><span class="cbh-count hot">${fmt(sc.estimate.total)} ₸</span><svg class="ic cbh-chev"><use href="#i-arrow"/></svg></span></button><div class="cat-block-body"><div class="block-note">Предварительная смета <b>${fmt(sc.estimate.total)} ₸</b> — детально на шаге «Проект».</div></div></div>`;
   return {
     chrome: {
       title: 'Персональная подборка', island: 'Подборка готова',
@@ -505,11 +544,13 @@ VIEWS.results = () => {
     html: `
       <div class="ai-banner">
         <div class="av"><div class="brandmark mark" id="bnMark"></div></div>
-        <p>Под ваш бриф (<b>${sc.guestsLabel}</b>, бюджет <b>${S.answers.budget || '—'}</b>) подобрал <b>${sc.vendors.length} вариантов</b>, свободных на <b>${sc.date}</b>. ${sc.fits ? `Итог <b>${fmt(sc.estimate.total)} ₸</b> — укладывается в бюджет.` : `Полный набор — <b>${fmt(sc.estimate.total)} ₸</b>, чуть выше бюджета: уберите 1–2 позиции, и AI пересчитает.`}</p>
+        <p>Под ваш бриф (<b>${sc.guestsLabel}</b>, бюджет <b>${S.answers.budget || '—'}</b>) AI собрал подборку по направлениям, всё свободно на <b>${sc.date}</b>. ${sc.fits ? `Итог <b>${fmt(sc.estimate.total)} ₸</b> — в бюджете.` : `Полный набор <b>${fmt(sc.estimate.total)} ₸</b> — чуть выше бюджета, уберите 1–2 позиции.`}</p>
       </div>
-      ${cards}`,
+      <div class="blocks-hint">${icon('i-spark')} Каждый блок открывается отдельно — нажмите, чтобы развернуть</div>
+      ${vendorBlocks}${docBlocks}`,
     onMount: (el) => {
       buildSpiral($('#bnMark', el), { color: 'var(--accent-2)' });
+      el.querySelectorAll('.cat-block-head').forEach((h) => h.addEventListener('click', () => h.closest('.cat-block').classList.toggle('open')));
       el.querySelectorAll('.vcard .media img').forEach((im) => {
         const done = () => { im.classList.add('loaded'); im.closest('.media').classList.add('imgloaded'); };
         if (im.complete && im.naturalWidth) done(); else { im.addEventListener('load', done); im.addEventListener('error', done); }
@@ -1158,7 +1199,7 @@ async function autoPlay() {
   $('#screen').appendChild(hint);
   enterApp();
   await autoTap('.role-card[data-role="client"]', 1000);
-  for (let q = 0; q < 4 && autoOn; q++) await autoTap('.chat-chips .chip', 820);
+  for (let q = 0; q < 14 && autoOn; q++) { if (document.querySelector('#puskBtn')) break; await autoTap('.chat-chips .chip', 520); }
   await autoTap('#puskBtn', 650);
   if (await waitFor('.vcard') && autoOn) await sleep(1500);
   await autoTap('#toCart', 700);
