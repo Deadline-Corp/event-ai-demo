@@ -14,10 +14,23 @@ const icon = (id, cls = 'ic') => `<svg class="${cls}"><use href="#${id}"/></svg>
 /* brand assets — client's real EVENT AI logo (theme-aware) */
 function markSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/mark-light.png' : 'assets/mark-dark.png') + '?v=11'; }
 function logoSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/logo-light.png' : 'assets/logo-dark.png') + '?v=11'; }
-/* renders the client's brand MARK into a square .brandmark element (kept the name buildSpiral for call-site compatibility) */
-function buildSpiral(el, { anim = false } = {}) {
+/* renders the client's brand MARK — a generative golden-angle dotted spiral (swirl of dots) */
+function buildSpiral(el, opts = {}) {
   if (!el) return;
-  el.innerHTML = `<img src="${markSrc()}" alt="EVENT AI" class="bm-img${anim ? ' bm-anim' : ''}" draggable="false"/>`;
+  const anim = opts.anim || false;
+  el.style.color = markColor(opts.color || 'currentColor');
+  const N = 92, GA = 2.39996323, scale = 4.95, maxR = 47, cx = 50, cy = 50;
+  let dots = '';
+  for (let i = 1; i <= N; i++) {
+    const r = scale * Math.sqrt(i);
+    if (r > maxR) break;
+    const a = i * GA;
+    const x = (cx + r * Math.cos(a)).toFixed(2);
+    const y = (cy + r * Math.sin(a)).toFixed(2);
+    const dr = (1.35 + 1.55 * (1 - i / N)).toFixed(2);
+    dots += `<circle cx="${x}" cy="${y}" r="${dr}"/>`;
+  }
+  el.innerHTML = `<svg class="bm-svg${anim ? ' bm-anim' : ''}" viewBox="0 0 100 100" fill="currentColor" preserveAspectRatio="xMidYMid meet" aria-label="EVENT AI">${dots}</svg>`;
 }
 
 /* spiral animation + few runtime styles */
@@ -1252,7 +1265,7 @@ function showWelcome() {
   document.body.dataset.stage = 'welcome';
   w.classList.remove('is-gone'); w.style.display = 'flex';
   const col = w.querySelector('.wl-col'); col.style.display = 'none'; void col.offsetWidth; col.style.display = '';
-  const wl = $('#welcomeLogo'); if (wl) wl.src = logoSrc();
+  buildSpiral($('#wlMark'), { color: 'var(--accent-2)' });
   const rows = [...w.querySelectorAll('.lrow')];
   rows.forEach((r, i) => { r.style.setProperty('--r', i); r.classList.remove('on'); setTimeout(() => r.classList.add('on'), 820 + i * 150); });
   const cv = w.querySelector('.val[data-count]');
@@ -1278,7 +1291,7 @@ function markColor(c) { return (c === '#fff' && document.documentElement.dataset
 function applyTheme(t) {
   document.documentElement.dataset.theme = (t === 'light') ? 'light' : 'dark';
   try { localStorage.setItem('ea-theme', document.documentElement.dataset.theme); } catch (e) {}
-  const wl = $('#welcomeLogo'); if (wl) wl.src = logoSrc();
+  buildSpiral($('#wlMark'), { color: 'var(--accent-2)' });
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t === 'light' ? '#EEF2F9' : '#04060B');
 }
 function initTheme() {
