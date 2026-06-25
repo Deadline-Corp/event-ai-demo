@@ -194,17 +194,37 @@ backBtn.addEventListener('click', goBack);
 /* ============================================================
    VIEW: SPLASH
    ============================================================ */
+function splashFireworks(host) {
+  if (!host) return;
+  const colors = ['#ffffff', '#5AA0FF', '#F5B544', '#2C7BFF', '#9EC5FF'];
+  const n = 24;
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('i'); s.className = 'fw-spark';
+    const ang = (i / n) * Math.PI * 2 + Math.random() * 0.5;
+    const dist = 46 + Math.random() * 86;
+    s.style.setProperty('--dx', (Math.cos(ang) * dist).toFixed(1) + 'px');
+    s.style.setProperty('--dy', (Math.sin(ang) * dist).toFixed(1) + 'px');
+    s.style.setProperty('--d', (0.7 + Math.random() * 0.6).toFixed(2) + 's');
+    s.style.color = colors[i % colors.length];
+    s.style.animationDelay = (Math.random() * 0.12).toFixed(2) + 's';
+    host.appendChild(s);
+  }
+  setTimeout(() => host.querySelectorAll('.fw-spark').forEach((e) => e.remove()), 1700);
+}
 VIEWS.splash = () => ({
-  chrome: { title: 'EVENT AI', back: false, island: 'EVENT AI' },
+  chrome: { title: 'EventAi', back: false, island: 'EventAi' },
   html: `<div class="view splash splash-inner" style="position:static;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0">
       <div class="brandmark mark" id="splashMark"></div>
-      <div class="name">EVENT AI</div>
+      <div class="name">EventAi</div>
       <div class="sub">Личный AI event-менеджер</div>
       <div class="loadbar"><i></i></div>
     </div>`,
   onMount: () => {
-    buildSpiral($('#splashMark'), { color: '#fff', anim: true });
-    setTimeout(() => navigate('roleSelect'), 2100);
+    const m = $('#splashMark');
+    buildSpiral(m, { color: '#fff', anim: true });
+    setTimeout(() => splashFireworks(m), 360);
+    setTimeout(() => splashFireworks(m), 1480);
+    setTimeout(() => navigate('roleSelect'), 2900);
   },
 });
 

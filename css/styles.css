@@ -166,9 +166,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 
 /* ============================================================ SPLASH */
 .splash{align-items:center;justify-content:center;text-align:center;gap:0;padding:0}
-.splash .mark{width:84px;height:84px;margin-bottom:30px;filter:drop-shadow(0 0 26px var(--accent-glow));animation:splashBob 2.2s var(--ease) infinite}
-@keyframes splashBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-9px) scale(1.06)}}
-.splash .name{font-size:32px;font-weight:700;letter-spacing:-.04em;opacity:0;animation:fadeUp .8s var(--ease) .5s both}
+.splash .mark{position:relative;width:88px;height:88px;margin-bottom:32px;overflow:visible;animation:splashBob 2.6s var(--ease) infinite,splashGlow 2.6s ease-in-out infinite}
+@keyframes splashBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-9px) scale(1.05)}}
+@keyframes splashGlow{0%,100%{filter:drop-shadow(0 0 18px var(--accent-glow))}50%{filter:drop-shadow(0 0 36px var(--accent-glow))}}
+.fw-spark{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:currentColor;pointer-events:none;box-shadow:0 0 9px 1px currentColor;animation:fwBurst var(--d,.95s) cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes fwBurst{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}12%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.15);opacity:0}}
+.splash .name{font-family:'Poppins',sans-serif;font-size:32px;font-weight:600;letter-spacing:-.01em;opacity:0;animation:fadeUp .8s var(--ease) .5s both}
 .splash .sub{color:var(--text-2);font-size:13px;margin-top:9px;font-family:var(--mono);letter-spacing:.02em;opacity:0;animation:fadeUp .8s var(--ease) .7s both}
 .splash .loadbar{margin-top:38px;width:120px;height:2px;border-radius:3px;background:var(--surface-2);overflow:hidden;opacity:0;animation:fadeUp .6s var(--ease) .9s both}
 .splash .loadbar i{display:block;height:100%;width:40%;border-radius:3px;background:linear-gradient(90deg,transparent,var(--accent-2),transparent);animation:slide 1.3s var(--ease) infinite}
@@ -1127,8 +1130,9 @@ html[data-theme="light"] .inv-seg.sel{color:var(--accent)}
 .bm-anim{animation:bmIn .6s var(--ease) both}
 @keyframes bmIn{from{opacity:0;transform:scale(.66) rotate(-16deg)}to{opacity:1;transform:none}}
 .wl-logo{display:flex;align-items:center;gap:13px;margin-bottom:24px;opacity:0;animation:fadeUp .7s var(--ease) .12s both}
-.wl-mk{width:48px;height:48px;flex:none;filter:drop-shadow(0 6px 20px rgba(44,123,255,.4))}
-.wl-word{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.025em;color:var(--text);line-height:1}
+.wl-mk{width:48px;height:48px;flex:none;animation:wlBreathe 3.4s ease-in-out infinite}
+@keyframes wlBreathe{0%,100%{transform:scale(1);filter:drop-shadow(0 6px 20px rgba(44,123,255,.4))}50%{transform:scale(1.05);filter:drop-shadow(0 6px 26px rgba(44,123,255,.6))}}
+.wl-word{font-family:'Poppins',sans-serif;font-size:29px;font-weight:600;letter-spacing:-.01em;color:var(--text);line-height:1}
 .wl-word b{font-weight:700}
 @media(max-width:1019px){.wl-mk{width:42px;height:42px}.wl-word{font-size:27px}}
 
