@@ -12,25 +12,12 @@ const icon = (id, cls = 'ic') => `<svg class="${cls}"><use href="#${id}"/></svg>
 
 /* ---------- brandmark: golden-spiral of dots ---------- */
 /* brand assets — client's real EVENT AI logo (theme-aware) */
-function markSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/mark-light.png' : 'assets/mark-dark.png') + '?v=11'; }
-function logoSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/logo-light.png' : 'assets/logo-dark.png') + '?v=11'; }
-/* renders the client's brand MARK — a generative golden-angle dotted spiral (swirl of dots) */
+function markSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/mark-light.png' : 'assets/mark-dark.png') + '?v=19'; }
+function logoSrc() { return (document.documentElement.dataset.theme === 'light' ? 'assets/logo-light.png' : 'assets/logo-dark.png') + '?v=19'; }
+/* renders the client's REAL brand MARK (dotted-spiral logo, extracted from his file) */
 function buildSpiral(el, opts = {}) {
   if (!el) return;
-  const anim = opts.anim || false;
-  el.style.color = markColor(opts.color || 'currentColor');
-  const N = 92, GA = 2.39996323, scale = 4.95, maxR = 47, cx = 50, cy = 50;
-  let dots = '';
-  for (let i = 1; i <= N; i++) {
-    const r = scale * Math.sqrt(i);
-    if (r > maxR) break;
-    const a = i * GA;
-    const x = (cx + r * Math.cos(a)).toFixed(2);
-    const y = (cy + r * Math.sin(a)).toFixed(2);
-    const dr = (1.35 + 1.55 * (1 - i / N)).toFixed(2);
-    dots += `<circle cx="${x}" cy="${y}" r="${dr}"/>`;
-  }
-  el.innerHTML = `<svg class="bm-svg${anim ? ' bm-anim' : ''}" viewBox="0 0 100 100" fill="currentColor" preserveAspectRatio="xMidYMid meet" aria-label="EVENT AI">${dots}</svg>`;
+  el.innerHTML = `<img src="${markSrc()}" alt="EventAi" class="bm-img${opts.anim ? ' bm-anim' : ''}" draggable="false"/>`;
 }
 
 /* spiral animation + few runtime styles */
