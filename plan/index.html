@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventAi — План разработки продукта</title>
+<meta name="description" content="Полный план разработки AI-маркетплейса организации мероприятий EventAi: архитектура, технологический стек и обоснование, сложности, регуляторика Казахстана, дорожная карта, бюджет.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#04060B; --bg-2:#070B12; --elev:#0B1019; --elev-2:#0E141F;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.13);
+    --blue:#2C7BFF; --blue-2:#5AA0FF; --blue-3:#8EC5FF; --blue-soft:rgba(44,123,255,.12);
+    --txt:#EEF1F8; --dim:rgba(238,241,248,.64); --faint:rgba(238,241,248,.42);
+    --green:#34D399; --amber:#FBBF24; --red:#F87171; --violet:#A78BFA;
+    --mono:'JetBrains Mono',monospace; --head:'Space Grotesk',sans-serif; --body:'Inter',sans-serif;
+    --maxw:940px;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  body{background:var(--bg);color:var(--txt);font-family:var(--body);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(1200px 700px at 80% -10%,rgba(44,123,255,.10),transparent 60%),radial-gradient(900px 600px at -10% 20%,rgba(44,123,255,.06),transparent 55%)}
+  a{color:var(--blue-2);text-decoration:none}
+  a:hover{color:var(--blue-3)}
+  ::selection{background:rgba(44,123,255,.32);color:#fff}
+
+  /* progress + nav */
+  .progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--blue-3));width:0;z-index:100}
+  header.top{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;background:rgba(4,6,11,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em}
+  .brand .mk{width:30px;height:30px;flex:0 0 auto}
+  .brand b{color:var(--blue)}
+  .topnav{display:flex;align-items:center;gap:6px}
+  .topnav a{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--dim);padding:7px 11px;border-radius:8px;text-transform:uppercase}
+  .topnav a:hover{color:var(--txt);background:rgba(255,255,255,.05)}
+  .topnav a.cta{color:var(--blue-2);border:1px solid rgba(44,123,255,.4);background:var(--blue-soft)}
+  .topnav a.cta:hover{background:rgba(44,123,255,.2);color:#fff}
+  .burger{display:none;background:none;border:1px solid var(--line-2);border-radius:9px;color:var(--txt);padding:8px 10px;cursor:pointer;font-size:15px}
+  @media(max-width:900px){.topnav{display:none}.burger{display:block}}
+
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-2);display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--blue)}
+  h1{font-family:var(--head);font-weight:700;font-size:clamp(38px,6vw,68px);line-height:1.03;letter-spacing:-.03em}
+  h2{font-family:var(--head);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.025em;margin-bottom:18px}
+  h3{font-family:var(--head);font-weight:600;font-size:22px;letter-spacing:-.01em;margin:30px 0 10px}
+  h4{font-family:var(--head);font-weight:600;font-size:18px;margin:20px 0 6px}
+  p{color:var(--dim);margin:0 0 16px}
+  p strong,li strong{color:var(--txt);font-weight:600}
+  .lead{font-size:20px;line-height:1.6;color:rgba(238,241,248,.82)}
+  ul,ol{margin:0 0 18px;padding-left:0;list-style:none}
+  li{color:var(--dim);margin:0 0 11px;padding-left:26px;position:relative}
+  li::before{content:"";position:absolute;left:2px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--blue);transform:rotate(45deg)}
+  ol{counter-reset:n}
+  ol li{padding-left:38px}
+  ol li::before{counter-increment:n;content:counter(n);top:0;left:0;width:24px;height:24px;border-radius:50%;background:var(--blue-soft);border:1px solid rgba(44,123,255,.4);color:var(--blue-2);font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center;transform:none}
+
+  /* hero */
+  .hero{padding-top:150px;padding-bottom:56px}
+  .hero .tag{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:26px}
+  .hero h1 em{font-style:normal;color:var(--blue)}
+  .hero .sub{font-size:22px;line-height:1.5;color:rgba(238,241,248,.78);max-width:680px;margin:26px 0 0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+  .chip{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;color:var(--dim);padding:8px 15px;border:1px solid var(--line-2);border-radius:100px;background:rgba(255,255,255,.025)}
+  .chip b{color:var(--blue-2);font-weight:500}
+
+  /* cards / grids */
+  .card{background:linear-gradient(180deg,var(--elev),var(--bg-2));border:1px solid var(--line);border-radius:18px;padding:26px 28px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .tldr{background:radial-gradient(120% 140% at 0% 0%,rgba(44,123,255,.14),transparent 55%),linear-gradient(180deg,var(--elev),var(--bg-2));border:1px solid rgba(44,123,255,.28);border-radius:20px;padding:30px 32px;margin-top:44px}
+  .tldr h4{margin-top:0;color:var(--blue-2);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  .stat .v{font-family:var(--head);font-weight:700;font-size:34px;letter-spacing:-.02em;color:var(--txt);line-height:1}
+  .stat .l{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:7px;letter-spacing:.03em}
+  .stat .v b{color:var(--blue)}
+
+  /* table */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:16px;margin:22px 0}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+  th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-2);background:rgba(44,123,255,.05)}
+  tr:last-child td{border-bottom:none}
+  td{color:var(--dim)}
+  td b,td strong{color:var(--txt)}
+  td .why{color:var(--faint);font-size:13.5px;display:block;margin-top:3px}
+
+  /* pills / severity */
+  .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:4px 11px;border-radius:100px;border:1px solid var(--line-2)}
+  .pill .d{width:7px;height:7px;border-radius:50%}
+  .sev-h{color:#FBA;border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08)} .sev-h .d{background:var(--red)}
+  .sev-m{color:#FCD;border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.08);color:#FBD980} .sev-m .d{background:var(--amber)}
+  .sev-l{color:#9EE;border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08);color:#86E9C6} .sev-l .d{background:var(--green)}
+  .ok{color:var(--green)} .warn{color:var(--amber)}
+
+  /* risk block */
+  .risk{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:12px;padding:20px 24px;margin-bottom:14px;background:var(--bg-2)}
+  .risk.r-h{border-left-color:var(--red)} .risk.r-m{border-left-color:var(--amber)} .risk.r-l{border-left-color:var(--green)}
+  .risk .rh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .risk h4{margin:0;font-size:18px}
+  .risk .mit{font-size:15px;color:var(--dim);margin:8px 0 0}
+  .risk .mit b{color:var(--blue-2)}
+
+  /* roadmap */
+  .phase{display:grid;grid-template-columns:148px 1fr;gap:26px;padding:26px 0;border-top:1px solid var(--line)}
+  .phase:first-child{border-top:none}
+  .phase .pl{font-family:var(--mono)}
+  .phase .pl .pn{font-size:13px;color:var(--blue-2);letter-spacing:.1em}
+  .phase .pl .pt{font-family:var(--head);font-size:21px;color:var(--txt);font-weight:600;margin-top:6px;letter-spacing:-.01em;line-height:1.1}
+  .phase .pl .pd{font-size:12px;color:var(--faint);margin-top:8px}
+  .phase .pc h4{margin-top:0}
+  @media(max-width:680px){.phase{grid-template-columns:1fr;gap:10px}}
+  .badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding:3px 9px;border-radius:6px;background:var(--blue-soft);border:1px solid rgba(44,123,255,.3);color:var(--blue-2);margin:0 6px 6px 0}
+  .badge.done{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.35);color:#86E9C6}
+
+  /* architecture diagram */
+  .arch{display:flex;flex-direction:column;gap:14px;margin:8px 0}
+  .arow{display:grid;gap:12px}
+  .ab{border:1px solid var(--line-2);border-radius:12px;padding:15px 16px;background:var(--elev);text-align:center}
+  .ab .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--txt)}
+  .ab .s{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:5px;letter-spacing:.02em}
+  .ab.blue{border-color:rgba(44,123,255,.4);background:linear-gradient(180deg,rgba(44,123,255,.12),rgba(44,123,255,.03))}
+  .ab.kz{border-color:rgba(52,211,153,.4);background:linear-gradient(180deg,rgba(52,211,153,.08),transparent)}
+  .arrow{text-align:center;color:var(--faint);font-size:18px;line-height:1}
+  .alabel{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;text-align:center;margin:2px 0}
+
+  .note{font-family:var(--mono);font-size:13px;color:var(--faint);border-left:2px solid var(--line-2);padding:4px 0 4px 16px;margin:18px 0}
+  .src{font-size:12.5px}
+  .src sup{color:var(--blue-2);font-family:var(--mono);font-size:10px}
+  .refs li{font-size:13.5px;padding-left:30px}
+  .refs li::before{content:none}
+  .refs li .rn{position:absolute;left:0;top:2px;font-family:var(--mono);font-size:11px;color:var(--blue-2)}
+  .quote{font-family:var(--head);font-weight:500;font-size:22px;line-height:1.45;color:var(--txt);letter-spacing:-.01em;border-left:3px solid var(--blue);padding:6px 0 6px 24px;margin:24px 0}
+
+  footer{border-top:1px solid var(--line);padding:48px 0 60px;margin-top:20px}
+  .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+  .foot .dim{color:var(--faint);font-family:var(--mono);font-size:12.5px;line-height:1.9}
+  .disc{margin-top:26px;font-size:12.5px;color:var(--faint);line-height:1.7;border-top:1px solid var(--line);padding-top:18px}
+
+  .toc{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(4,6,11,.97);z-index:95;padding:80px 28px;display:none;flex-direction:column;gap:4px;overflow:auto}
+  .toc.open{display:flex}
+  .toc a{font-family:var(--head);font-size:22px;color:var(--dim);padding:10px 0;border-bottom:1px solid var(--line)}
+  .toc a:hover{color:var(--txt)}
+  .toc .num{font-family:var(--mono);font-size:13px;color:var(--blue-2);margin-right:14px}
+
+  @media(max-width:680px){body{font-size:16px}section{padding:48px 0}.hero{padding-top:120px}.card{padding:22px}.tldr{padding:24px}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+
+<header class="top">
+  <a href="#top" class="brand"><svg class="mk" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#EEF1F8"><circle cx="50" cy="18" r="5"/><circle cx="68" cy="24" r="4.5"/><circle cx="79" cy="40" r="4"/><circle cx="80" cy="58" r="3.6"/><circle cx="70" cy="72" r="3.3"/><circle cx="54" cy="78" r="3"/><circle cx="38" cy="74" r="2.8"/><circle cx="28" cy="62" r="2.6"/><circle cx="27" cy="46" r="3"/><circle cx="34" cy="32" r="3.4"/><circle cx="46" cy="40" r="3.2" fill="#2C7BFF"/><circle cx="58" cy="46" r="2.8" fill="#2C7BFF"/><circle cx="56" cy="58" r="2.5" fill="#2C7BFF"/><circle cx="44" cy="56" r="2.3" fill="#2C7BFF"/></g></svg>Event<b>Ai</b></a>
+  <nav class="topnav">
+    <a href="#product">Продукт</a>
+    <a href="#stack">Стек</a>
+    <a href="#risks">Сложности</a>
+    <a href="#kz">Казахстан</a>
+    <a href="#roadmap">Дорожная карта</a>
+    <a href="#budget">Бюджет</a>
+    <a class="cta" href="https://deadline-corp.github.io/event-ai-demo/" target="_blank" rel="noopener">Демо ↗</a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Меню">☰</button>
+</header>
+
+<div class="toc" id="toc">
+  <a href="#product"><span class="num">01</span>Что мы строим</a>
+  <a href="#status"><span class="num">02</span>Где мы сейчас</a>
+  <a href="#architecture"><span class="num">03</span>Архитектура</a>
+  <a href="#stack"><span class="num">04</span>Стек и обоснование</a>
+  <a href="#ai"><span class="num">05</span>AI-слой</a>
+  <a href="#risks"><span class="num">06</span>Сложности и риски</a>
+  <a href="#kz"><span class="num">07</span>Казахстан: регуляторика</a>
+  <a href="#payments"><span class="num">08</span>Платежи</a>
+  <a href="#data"><span class="num">09</span>Модель данных</a>
+  <a href="#roadmap"><span class="num">10</span>Дорожная карта</a>
+  <a href="#buildbuy"><span class="num">11</span>Build vs Buy</a>
+  <a href="#budget"><span class="num">12</span>Команда, сроки, бюджет</a>
+  <a href="#golive"><span class="num">13</span>Что нужно для запуска</a>
+</div>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero wrap" style="border:none">
+  <div class="tag">DEADLINE × EventAi · План разработки продукта · v1.0 · Июнь 2026</div>
+  <h1>Полный план разработки<br>Event<em>Ai</em></h1>
+  <p class="sub">Что мы строим, какой технологический стек выбираем и почему, какие сложности реально предстоит решить, и за сколько это можно довести до работающего продукта.</p>
+  <div class="meta">
+    <span class="chip">Документ для <b>партнёрского ревью</b></span>
+    <span class="chip">Рынок: <b>Казахстан</b></span>
+    <span class="chip">Подготовил: <b>DEADLINE</b></span>
+    <span class="chip">Живое демо: <b>задеплоено</b></span>
+  </div>
+
+  <div class="tldr">
+    <h4>Кратко — за 30 секунд</h4>
+    <p class="lead" style="margin-bottom:18px">EventAi — это <strong>AI-маркетплейс организации мероприятий</strong>: пользователь в чате описывает событие, а система сама собирает подборку подрядчиков, смету, сценарий и тайминг, и доводит до брони. Ниша в Казахстане <strong>свободна</strong> — единого маркетплейса подрядчиков той/мероприятий нет.</p>
+    <div class="grid g4" style="gap:22px">
+      <div class="stat"><div class="v">115 900</div><div class="l">браков в РК за 2025 г.<sup style="color:var(--blue-2)">1</sup></div></div>
+      <div class="stat"><div class="v">$8–24<b>k</b></div><div class="l">средний бюджет свадьбы<sup style="color:var(--blue-2)">1</sup></div></div>
+      <div class="stat"><div class="v">3 <b>стороны</b></div><div class="l">заказчик · партнёр · админ</div></div>
+      <div class="stat"><div class="v">~$35–65<b>k</b></div><div class="l">ориентир на полную V1</div></div>
+    </div>
+  </div>
+  <p class="note">Это технический план, а не маркетинговая презентация. Цифры бюджета — предварительные вилки для внутренней оценки; финальная смета считается после выбора объёма (см. §12). Все ключевые факты по регуляторике и платежам РК проверены ресёрчем с источниками (см. ссылки по тексту и список в конце).</p>
+</section>
+
+<!-- 01 PRODUCT -->
+<section id="product" class="wrap">
+  <div class="eyebrow">01 — Что мы строим</div>
+  <h2>AI-маркетплейс, который собирает мероприятие за вас</h2>
+  <p class="lead">Сегодня организация той/свадьбы/корпоратива в Казахстане — это десятки звонков, чаты в WhatsApp, ручные таблицы и сметы. Подрядчиков находят через Instagram и 2GIS, бронируют «на доверии», смету считают вручную. Единой платформы, которая бы <strong>собрала всё мероприятие в одном диалоге</strong>, нет.<sup style="color:var(--blue-2)">2</sup></p>
+
+  <div class="quote">«Опишите идею — AI соберёт всё»: площадку, ведущего, артистов, кейтеринг, оформление, технику — плюс смету, сценарий и тайминг под конкретный формат события.</div>
+
+  <h3>Три стороны платформы</h3>
+  <div class="grid g3">
+    <div class="card"><div class="pill sev-l" style="margin-bottom:12px"><span class="d"></span>Заказчик</div><h4 style="margin-top:0">Тёмное premium-приложение</h4><p style="font-size:15px;margin:0">AI-чат → персональная подборка по 11 категориям → смета, сценарий, тайминг, пригласительные → бронь и оплата.</p></div>
+    <div class="card"><div class="pill" style="margin-bottom:12px;color:var(--blue-2);border-color:rgba(44,123,255,.4)"><span class="d" style="background:var(--blue)"></span>Партнёр</div><h4 style="margin-top:0">Кабинет подрядчика</h4><p style="font-size:15px;margin:0">Листинг (фото/цены/пакеты), календарь занятости, входящие заявки → подтверждение брони, выплаты, аналитика просмотров и конверсии.</p></div>
+    <div class="card"><div class="pill" style="margin-bottom:12px;color:var(--violet);border-color:rgba(167,139,250,.4)"><span class="d" style="background:var(--violet)"></span>Админ</div><h4 style="margin-top:0">Панель управления</h4><p style="font-size:15px;margin:0">Модерация карточек, пользователи и подрядчики, заявки и оплаты, категории, комиссии, статистика, жалобы.</p></div>
+  </div>
+
+  <h3>Чем зарабатываем</h3>
+  <ul>
+    <li><strong>Комиссия 7%</strong> с каждого подтверждённого заказа — основная модель.</li>
+    <li><strong>Бронь 50 000 ₸</strong> — депозит за резерв даты и подтверждение подрядчиков.</li>
+    <li><strong>Платное продвижение</strong> и premium-размещение подрядчиков в подборках.</li>
+    <li><strong>B2B-пакеты</strong> и подписки для подрядчиков (Базовый / Pro / Premium) — на этапе роста.</li>
+  </ul>
+
+  <h3>Почему ниша свободна — и это важно</h3>
+  <p>Ресёрч рынка показал: в Казахстане и ЦА <strong>нет</strong> доминирующего маркетплейса бронирования event-подрядчиков в формате The Knot / WeddingWire. Рынок раздроблен:<sup style="color:var(--blue-2)">2</sup></p>
+  <ul>
+    <li><strong>Ticketon</strong> (входит в Freedom Holding) — продажа билетов на события, но не агрегатор подрядчиков под частный заказ.</li>
+    <li><strong>Event-агентства</strong> (Talisman, Paprika, YOURS и др.) — каждое со своим закрытым пулом, связь через WhatsApp/Instagram.</li>
+    <li><strong>2GIS / Instagram / WhatsApp</strong> — фактический слой поиска и брони, но без календаря занятости, смет и договоров онлайн.</li>
+  </ul>
+  <p>Формат «AI-ассистент, который автоматически собирает мероприятие целиком» — <strong>не занят</strong>. Это и есть наш вход на рынок.</p>
+</section>
+
+<!-- 02 STATUS -->
+<section id="status" class="wrap">
+  <div class="eyebrow">02 — Где мы сейчас</div>
+  <h2>Фаза 0 — демо готово и задеплоено</h2>
+  <p class="lead">Прежде чем писать продукт, мы собрали <strong>интерактивное демо</strong> — чтобы увидеть и согласовать всю логику без реального бэкенда. Это снимает главный риск разработки: непонимание, «что именно строим».</p>
+  <div class="grid g2" style="margin:22px 0">
+    <div class="card">
+      <h4 style="margin-top:0">Что демо уже показывает</h4>
+      <ul style="margin:0">
+        <li>Welcome-гейт, выбор роли (заказчик / партнёр), RU/KZ/EN, светлая/тёмная тема.</li>
+        <li>AI-чат-интейк по одному вопросу, 17 форматов событий с <strong>format-aware</strong> сценарием и таймингом.</li>
+        <li>Подборка по 11 блокам, детальные карточки, смета, сценарий, тайминг, пригласительные.</li>
+        <li>Бронь (50 000 ₸ / комиссия 7%), кабинет партнёра, тизер админки, карта подрядчиков (Алматы).</li>
+      </ul>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px">
+      <div class="pill sev-l"><span class="d"></span>LIVE</div>
+      <p style="margin:0">Демо доступно по ссылке — открывается с телефона и десктопа, без установки:</p>
+      <a href="https://deadline-corp.github.io/event-ai-demo/" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:14px;word-break:break-all">deadline-corp.github.io/event-ai-demo ↗</a>
+      <p class="note" style="margin:6px 0 0">Сложный функционал в демо — имитация («углублённая демо-версия»): показывает, КАК это работает, без реального бэкенда. Этот документ описывает, что нужно, чтобы оно заработало по-настоящему.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ARCHITECTURE -->
+<section id="architecture" class="wrap">
+  <div class="eyebrow">03 — Архитектура решения</div>
+  <h2>Как устроена система целиком</h2>
+  <p class="lead">Принцип: <strong>LLM отвечает за язык, код — за правду.</strong> Нейросеть ведёт диалог, ранжирует и предлагает; все деньги, даты, бронь и налоги считает детерминированный код. Это убирает риск «AI ошибся в смете».</p>
+
+  <div class="card" style="margin:24px 0;padding:30px">
+    <div class="arch">
+      <div class="arow g3">
+        <div class="ab blue"><div class="t">Заказчик</div><div class="s">PWA / Web · тёмная тема</div></div>
+        <div class="ab blue"><div class="t">Партнёр</div><div class="s">Кабинет · светлая тема</div></div>
+        <div class="ab blue"><div class="t">Админ</div><div class="s">Refine · модерация</div></div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="alabel">Next.js (App Router) · стриминг AI · edge</div>
+      <div class="ab" style="border-color:rgba(44,123,255,.4)"><div class="t">AI-слой — Vercel AI SDK + Claude</div><div class="s">интейк (structured output) · подбор (SQL + pgvector + LLM re-rank) · генерация сметы/сценария/документов</div></div>
+      <div class="arrow">↓</div>
+      <div class="arow g2">
+        <div class="ab kz"><div class="t">PostgreSQL + pgvector</div><div class="s">🇰🇿 хостинг в Казахстане (PII по закону)</div></div>
+        <div class="ab"><div class="t">Платёжный провайдер (ioka)</div><div class="s">приём · депозит · сплит-комиссия · выплаты</div></div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="arow g3">
+        <div class="ab"><div class="t">Документы — Carbone</div><div class="s">смета/сценарий → PDF/DOCX/XLSX</div></div>
+        <div class="ab"><div class="t">Бронь и календарь</div><div class="s">занятость · слоты · статусы</div></div>
+        <div class="ab"><div class="t">Уведомления</div><div class="s">WhatsApp BSP · SMS/OTP · email</div></div>
+      </div>
+    </div>
+  </div>
+  <p>Публичное приложение и AI могут жить на edge (Vercel) для скорости и SEO. <strong>Персональные данные обязаны храниться в БД на территории Казахстана</strong> — это не рекомендация, а требование закона (см. §7). Поэтому БД с PII выносится на KZ-хостинг, а edge работает без хранения PII.</p>
+</section>
+
+<!-- 04 STACK -->
+<section id="stack" class="wrap">
+  <div class="eyebrow">04 — Технологический стек и обоснование</div>
+  <h2>Что выбираем и почему именно так</h2>
+  <p class="lead">Каждый выбор сделан под три ограничения: <strong>скорость вывода продукта</strong>, <strong>специфику Казахстана</strong> и <strong>переиспользование готового</strong> вместо написания с нуля. Стек проверен на актуальность в 2026 году.<sup style="color:var(--blue-2)">3</sup></p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Слой</th><th>Выбор</th><th>Почему именно это</th></tr></thead>
+      <tbody>
+        <tr><td><b>Фронтенд</b></td><td><b>Next.js 15<br>(App Router) + TS</b></td><td>Единый репозиторий, серверный рендеринг для SEO маркетплейса, стриминг ответов AI. App Router — рекомендованный дефолт в 2026.<span class="why">Альтернативы (чистый React SPA) проигрывают по SEO — для каталога подрядчиков это критично.</span></td></tr>
+        <tr><td><b>Мобильное</b></td><td><b>PWA → Capacitor</b></td><td>Переиспользуем ~95% веб-кода и получаем приложение в App Store / Google Play. Дешевле и быстрее, чем нативная разработка.<span class="why">⚠️ У сторов есть правила по in-app оплате бронирований — проверяем риск ревью заранее. Нативное (React Native) — на этапе роста.</span></td></tr>
+        <tr><td><b>База данных</b></td><td><b>PostgreSQL + Prisma + pgvector</b></td><td>Типобезопасность, миграции, и векторный поиск по стилю подрядчиков в той же БД — без отдельного сервиса. Prisma поддерживает pgvector нативно.<span class="why">pgvector держит до ~10 млн векторов — это годы роста для нашего объёма. Выделенный Pinecone/Qdrant не нужен до больших масштабов.</span></td></tr>
+        <tr><td><b>AI</b></td><td><b>Vercel AI SDK + Claude</b></td><td>Tool use и структурированный вывод (Zod-схемы) для интейка и сборки пакета. AI SDK 6 и нативные structured outputs Claude — актуальны на 2026.<span class="why">Модели по задаче: Haiku — дёшево, Sonnet — основная, Opus — сложная упаковка.</span></td></tr>
+        <tr><td><b>Документы</b></td><td><b>Carbone</b></td><td>Шаблоны Word/Excel → PDF/DOCX/XLSX. Контент-команда правит шаблоны сметы/сценария <b>без кода</b>.<span class="why">Альтернатива — Puppeteer HTML→PDF (бесплатно, гибче) для нестандартной вёрстки.</span></td></tr>
+        <tr><td><b>Календарь/бронь</b></td><td><b>Своя таблица занятости<br>(MVP)</b></td><td>На MVP — простая модель доступности в нашем Postgres. <b>Важно:</b> Cal.com в апреле 2026 ушёл в closed-source; открытый форк — Cal.diy (MIT).<span class="why">Поэтому не закладываемся на Cal.com сразу: своя бронь проще и без внешней зависимости; Cal.diy — опционально на v2.</span></td></tr>
+        <tr><td><b>Админка</b></td><td><b>Refine</b></td><td>Open-source, headless, React. CRUD и модерация из схемы БД за дни, а не недели. Генерирует обычный TS-код — без vendor lock-in.<span class="why">Альтернатива — react-admin (зрелее, тот же класс).</span></td></tr>
+        <tr><td><b>Платежи</b></td><td><b>ioka.kz</b> (осн.)<br><b>Freedom Pay</b> (резерв)</td><td>Единственные KZ-провайдеры со сплит-платежами + выплатами + Apple/Google Pay. Работа через агентскую схему снимает с нас лицензию НБК (см. §8).<span class="why">Kaspi не даёт сплит/выплаты сторонним платформам. Halyk QR — добавляем как дешёвый метод (0.5%).</span></td></tr>
+        <tr><td><b>Фон/задачи</b></td><td><b>Trigger.dev</b></td><td>Подтверждения брони, вебхуки оплат, генерация документов, выплаты — как фоновые задачи с ретраями.</td></tr>
+        <tr><td><b>Связь</b></td><td><b>WhatsApp BSP · SMS · email</b></td><td>KZ-аудитория общается в WhatsApp; OTP по SMS (Mobizon); email (Resend) для документов.<span class="why">Подключение WhatsApp Business API через BSP занимает 4–6 недель — начинаем заранее.</span></td></tr>
+        <tr><td><b>Аналитика</b></td><td><b>PostHog</b></td><td>Продуктовая аналитика + запись сессий + отслеживание ошибок в одном инструменте.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Опция «не писать ядро вообще»: no-code движок маркетплейса <b>Sharetribe</b> (от $39/мес) закрывает каркас, но лишает контроля над AI-native UX — нашим главным отличием. Поэтому ядро строим сами, а календарь/админку/документы/платежи переиспользуем (см. §11).</p>
+</section>
+
+<!-- 05 AI -->
+<section id="ai" class="wrap">
+  <div class="eyebrow">05 — AI-слой</div>
+  <h2>Как именно работает «умная» часть</h2>
+  <p class="lead">Главное требование клиента — <strong>format-aware генерация</strong>: сценарий, тайминг, смета должны глубоко различаться и быть тематически верными под каждый формат (Ұзату той ≠ свадьба ≠ корпоратив ≠ фестиваль), а не один универсальный шаблон.</p>
+  <div class="grid g2">
+    <div class="card"><h4 style="margin-top:0">1. Интейк</h4><p style="margin:0;font-size:15px">Свободный текст + кнопки → <b>structured output</b> (Claude + Zod) в строгую схему <span style="font-family:var(--mono);font-size:13px;color:var(--blue-2)">EventBrief</span>. Никаких длинных анкет — диалог по одному вопросу.</p></div>
+    <div class="card"><h4 style="margin-top:0">2. Подбор (гибрид)</h4><p style="margin:0;font-size:15px">Детерминированный SQL-фильтр (свободен на дату + город + бюджет + категория) → <b>LLM re-rank по стилю</b> с обоснованием. Семантика стиля — на pgvector.</p></div>
+    <div class="card"><h4 style="margin-top:0">3. Упаковка</h4><p style="margin:0;font-size:15px">Агент с инструментами (<span style="font-family:var(--mono);font-size:13px;color:var(--blue-2)">search_vendors</span>, <span style="font-family:var(--mono);font-size:13px;color:var(--blue-2)">calculate_estimate</span>) собирает <span style="font-family:var(--mono);font-size:13px;color:var(--blue-2)">EventPackage</span>. Под каждый формат — своя библиотека шаблонов сценария.</p></div>
+    <div class="card"><h4 style="margin-top:0">4. Документы</h4><p style="margin:0;font-size:15px">Из <span style="font-family:var(--mono);font-size:13px;color:var(--blue-2)">EventPackage</span> → Carbone-шаблоны → реальные PDF/DOCX/XLSX. Отправка в WhatsApp/email.</p></div>
+  </div>
+  <p style="margin-top:22px"><strong>Деньги считает код, не LLM.</strong> Нейросеть только предлагает позиции; итог, аванс, комиссию и НДС считает детерминированная функция и проверяет бюджет. Это закрывает риск «поплывшей сметы».</p>
+  <p class="note">Контроль стоимости AI обязателен с самого начала: prompt-кэширование, выбор модели по задаче, ограничение контекста и токен-лимит на сессию. По данным ресёрча, операционные расходы на LLM недооценивают в 2–4 раза — мы закладываем это в архитектуру.<sup style="color:var(--blue-2)">3</sup></p>
+</section>
+
+<!-- 06 RISKS -->
+<section id="risks" class="wrap">
+  <div class="eyebrow">06 — Сложности и риски</div>
+  <h2>Что в этом приложении действительно сложно</h2>
+  <p class="lead">Честный разбор. У каждой сложности — оценка и конкретная митигация. Главные сложности не в коде интерфейса, а в <strong>регуляторике РК, платежах и качестве AI</strong>.</p>
+
+  <div class="risk r-h">
+    <div class="rh"><h4>Локализация персональных данных в Казахстане</h4><span class="pill sev-h"><span class="d"></span>Высокая</span></div>
+    <p style="margin:0">Закон РК № 94-V обязывает хранить персональные данные граждан РК на серверах <b>физически в Казахстане</b> (включая бэкапы). Это влияет на всю инфраструктуру.<sup style="color:var(--blue-2)">1</sup></p>
+    <p class="mit"><b>Митигация:</b> БД с PII — на KZ-хостинге (Kazakhtelecom DataCenter / сертифицированные зоны) с первой фазы; приложение и AI на edge без хранения PII; уведомление об утечках по регламенту.</p>
+  </div>
+
+  <div class="risk r-h">
+    <div class="rh"><h4>Платежи: сплит, выплаты и лицензия</h4><span class="pill sev-h"><span class="d"></span>Высокая</span></div>
+    <p style="margin:0">Если платформа сама аккумулирует и распределяет деньги — НБК может потребовать лицензию платёжной организации (капитал <b>30–100 млн ₸</b>). Маркетплейсу нужен сплит и выплаты множеству подрядчиков.<sup style="color:var(--blue-2)">4</sup></p>
+    <p class="mit"><b>Митигация:</b> работаем как платёжный агент <b>лицензированного PSP</b> (ioka / Freedom Pay) — по закону № 11-VI это снимает с нас лицензию. Деньги ходят через PSP, мы не аккумулируем их на своём счёте (см. §8). Юр-заключение KZ-финтех-юриста обязательно.</p>
+  </div>
+
+  <div class="risk r-m">
+    <div class="rh"><h4>Format-aware качество AI</h4><span class="pill sev-m"><span class="d"></span>Средняя</span></div>
+    <p style="margin:0">Сценарий Ұзату той должен быть культурно верным (беташар, выход невесты, бата), а не «generic banquet». Ошибка здесь бьёт по доверию.</p>
+    <p class="mit"><b>Митигация:</b> библиотека шаблонов + правил под каждый формат (не один промпт), ревью носителями традиций, детерминированная структура блоков. Код считает смету — LLM не «фантазирует» цифры.</p>
+  </div>
+
+  <div class="risk r-m">
+    <div class="rh"><h4>Ежемесячная отчётность платформы в налоговую</h4><span class="pill sev-m"><span class="d"></span>Средняя</span></div>
+    <p style="margin:0">С 1 января 2026 (Приказ МФ № 614) владельцы интернет-платформ обязаны <b>ежемесячно</b> отчитываться в налоговую по транзакциям и удержанным комиссиям — до 5 числа. Это новая обязанность, которую часто упускают.<sup style="color:var(--blue-2)">1</sup></p>
+    <p class="mit"><b>Митигация:</b> учёт комиссий и НДС встроен в код с самого начала; workflow выгрузки отчёта — часть админки, а не «потом».</p>
+  </div>
+
+  <div class="risk r-m">
+    <div class="rh"><h4>Качество KZ-языка и доверие к подрядчикам</h4><span class="pill sev-m"><span class="d"></span>Средняя</span></div>
+    <p style="margin:0">Полноценный казахский требует ревью носителя (глоссарий той/беташар). Подрядчики низкого качества убивают доверие к платформе.</p>
+    <p class="mit"><b>Митигация:</b> RU полностью + KZ-проход с ревью; <b>обязательная модерация</b> карточек админом до публикации; рейтинги и проверка.</p>
+  </div>
+
+  <div class="risk r-l">
+    <div class="rh"><h4>Стоимость и латентность LLM</h4><span class="pill sev-l"><span class="d"></span>Управляемая</span></div>
+    <p style="margin:0">Без контроля расходы на AI растут незаметно.</p>
+    <p class="mit"><b>Митигация:</b> prompt-кэш, выбор модели по задаче (Haiku/Sonnet/Opus), стриминг, токен-лимит на сессию — заложено в архитектуру.</p>
+  </div>
+
+  <div class="risk r-l">
+    <div class="rh"><h4>Долгий онбординг (мерчант, WhatsApp BSP)</h4><span class="pill sev-l"><span class="d"></span>Управляемая</span></div>
+    <p style="margin:0">Мерчант-аккаунт и WhatsApp Business API подключаются неделями.</p>
+    <p class="mit"><b>Митигация:</b> запускаем ТОО + мерчант (ioka) + BSP <b>параллельно</b> в начале Фазы 1, не блокируя разработку.</p>
+  </div>
+</section>
+
+<!-- 07 KZ -->
+<section id="kz" class="wrap">
+  <div class="eyebrow">07 — Казахстан: регуляторика и комплаенс</div>
+  <h2>Юридический контур — проверено ресёрчем</h2>
+  <p class="lead">Это самая недооценённая часть проекта и одновременно <strong>барьер для конкурентов</strong>. Ниже — актуальные на 2026 год требования с источниками.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Область</th><th>Требование (2026)</th><th>Что делаем</th></tr></thead>
+      <tbody>
+        <tr><td><b>Данные</b></td><td>Закон № 94-V: PII граждан РК хранится <b>в Казахстане</b>; уведомление об утечках; штрафы 100–10 000 МРП.<sup style="color:var(--blue-2)">1</sup></td><td>БД с PII на KZ-хостинге + бэкапы в РК; edge без PII.</td></tr>
+        <tr><td><b>НДС</b></td><td>С 01.01.2026 ставка <b>12% → 16%</b>; порог регистрации снижен до <b>10 000 МРП (~₸43,25 млн / ~$87k)</b>.<sup style="color:var(--blue-2)">1</sup></td><td>НДС в ценообразовании с дня один; код считает комиссию и НДС.</td></tr>
+        <tr><td><b>Отчётность</b></td><td>Приказ МФ № 614: <b>ежемесячный</b> отчёт платформы в налоговую по транзакциям/комиссиям (до 5 числа).<sup style="color:var(--blue-2)">1</sup></td><td>Выгрузка отчёта встроена в админку.</td></tr>
+        <tr><td><b>Счета</b></td><td>С 2026 — обязательный электронный счёт-фактура (ИС ЭСФ); НДС пред-фондируется.<sup style="color:var(--blue-2)">1</sup></td><td>Интеграция с ИС ЭСФ на фазе платежей.</td></tr>
+        <tr><td><b>Платформы</b></td><td>Закон № 18-VIII: при <b>&gt;100 000</b> польз./день — представитель в РК и реестр.<sup style="color:var(--blue-2)">1</sup></td><td>На старте порог не достигается; учитываем при росте.</td></tr>
+        <tr><td><b>Потребители</b></td><td>Инфо на казахском и русском; право возврата 14 дней; готовится норма о <b>солидарной ответственности</b> платформы и продавца.<sup style="color:var(--blue-2)">1</sup></td><td>Двуязычие; модерация подрядчиков как управление риском.</td></tr>
+        <tr><td><b>Юр.лицо</b></td><td><b>ТОО</b> (не ИП) — для приёма платежей, комиссии и ответственности; БИН; мерчант-онбординг.</td><td>Регистрируем ТОО параллельно разработке.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Дисклеймер: это инженерная сводка для планирования, не юридическая консультация. Перед запуском платёжного и данных-контура обязательно берём заключение местного юриста (Grata / Dentons / KZ-финтех).</p>
+</section>
+
+<!-- 08 PAYMENTS -->
+<section id="payments" class="wrap">
+  <div class="eyebrow">08 — Платежи</div>
+  <h2>Деньги: приём, депозит, комиссия, выплаты</h2>
+  <p class="lead">Маркетплейсу нужно: принять оплату (карта / Apple-Google Pay / QR), удержать депозит, взять <strong>комиссию 7%</strong> и выплатить подрядчикам. Ключевой вывод ресёрча — <strong>не держать деньги у себя</strong>, а ходить через лицензированный PSP.<sup style="color:var(--blue-2)">4</sup></p>
+
+  <div class="grid g3" style="margin:20px 0">
+    <div class="card"><div class="pill sev-l" style="margin-bottom:10px"><span class="d"></span>Основной</div><h4 style="margin-top:0">ioka.kz</h4><p style="font-size:14.5px;margin:0">Сплит-платежи + payout API + PCI DSS L1 + Apple/Google Pay. Тариф ~<b>2.9%</b> (переговорный). Агентская схема → <b>без лицензии НБК</b> для нас.</p></div>
+    <div class="card"><div class="pill" style="margin-bottom:10px;color:var(--blue-2);border-color:rgba(44,123,255,.4)"><span class="d" style="background:var(--blue)"></span>Резерв</div><h4 style="margin-top:0">Freedom Pay</h4><p style="font-size:14.5px;margin:0">Тот же набор (сплит, выплаты на карты, Apple/Google Pay), зарегистрирован в НБК. Тариф от <b>3%</b> — дороже ioka.</p></div>
+    <div class="card"><div class="pill" style="margin-bottom:10px;color:#86E9C6;border-color:rgba(52,211,153,.4)"><span class="d" style="background:var(--green)"></span>Добавка</div><h4 style="margin-top:0">Halyk QR</h4><p style="font-size:14.5px;margin:0">Отдельный метод оплаты, ставка <b>0.5%</b> (промо 0%) — для максимального покрытия аудитории поверх основного шлюза.</p></div>
+  </div>
+
+  <h3>Почему не Kaspi напрямую</h3>
+  <p>Kaspi — закрытая экосистема: сплит/эскроу/выплаты сторонним маркетплейсам через API <b>не предусмотрены</b>. Kaspi Pay можно подключить как один из методов оплаты в форме ioka/Freedom Pay, но не как оркестратор расчётов.<sup style="color:var(--blue-2)">4</sup></p>
+
+  <h3>Поток денег</h3>
+  <ol>
+    <li>Заказчик платит депозит/оплату через ioka (карта / Apple-Google Pay / QR).</li>
+    <li>ioka <b>автоматически сплитует</b>: комиссия платформы 7% → нам, остаток → подрядчику.</li>
+    <li>Выплаты подрядчикам — через payout API (на карту/счёт), с подтверждением статуса брони.</li>
+    <li>Комиссия и НДС фиксируются для ежемесячного отчёта в налоговую.</li>
+  </ol>
+  <p class="note">⚠️ Юридическая оговорка: если архитектура всё же предполагает аккумулирование средств у платформы, нужна лицензия НБК (30–100 млн ₸). Поэтому держимся агентской модели через PSP и подтверждаем её юр-заключением.</p>
+</section>
+
+<!-- 09 DATA -->
+<section id="data" class="wrap">
+  <div class="eyebrow">09 — Модель данных</div>
+  <h2>Сущности системы</h2>
+  <p class="lead">Базовые контракты уже зафиксированы в демо (Zod-схемы <span style="font-family:var(--mono);font-size:14px;color:var(--blue-2)">EventBrief</span>, <span style="font-family:var(--mono);font-size:14px;color:var(--blue-2)">EventPackage</span>) — продакшен их <strong>расширяет</strong>, а не переписывает.</p>
+  <div class="grid g2">
+    <div class="card"><h4 style="margin-top:0">Ядро маркетплейса</h4><p style="margin:0;font-family:var(--mono);font-size:13.5px;line-height:2;color:var(--dim)">users · business_profiles · projects (listings) · project_media · packages · availability · requests · bookings · reviews · documents · categories</p></div>
+    <div class="card"><h4 style="margin-top:0">Продакшен-расширение</h4><p style="margin:0;font-family:var(--mono);font-size:13.5px;line-height:2;color:var(--dim)">payments · payouts · commissions · notifications · vendor_embeddings · event_formats · lineup · moderation_log · analytics_events</p></div>
+  </div>
+  <p style="margin-top:16px">Двуязычные поля (RU/KZ) на сущностях контента. Новая сущность <span style="font-family:var(--mono);font-size:14px;color:var(--blue-2)">event_formats</span> хранит структуру блоков и обязательные элементы под каждый формат — это и есть техническая основа format-aware генерации.</p>
+</section>
+
+<!-- 10 ROADMAP -->
+<section id="roadmap" class="wrap">
+  <div class="eyebrow">10 — Дорожная карта</div>
+  <h2>От демо к работающему продукту</h2>
+  <p class="lead">Четыре фазы, привязанные к этапам коммерческого предложения. Web-first (как в КП), мобильные приложения — на этапе роста.</p>
+
+  <div style="margin-top:22px">
+    <div class="phase">
+      <div class="pl"><div class="pn">ФАЗА 0</div><div class="pt">Демо</div><div class="pd">✓ Готово</div></div>
+      <div class="pc"><h4>Дизайн-демо и согласование видения</h4><p style="margin:0">Интерактивное демо всех трёх сторон, 17 форматов, флоу заказчика. Снимает риск «непонимания, что строим».</p><div style="margin-top:10px"><span class="badge done">✓ задеплоено</span><span class="badge done">✓ согласовано</span></div></div>
+    </div>
+    <div class="phase">
+      <div class="pl"><div class="pn">ФАЗА 1</div><div class="pt">Клиентское приложение</div><div class="pd">~2–3 мес</div></div>
+      <div class="pc"><h4>Реальный AI и инфраструктура</h4><p style="margin:0 0 10px">Next.js + AI SDK + Claude; Postgres+pgvector на KZ-хостинге; auth по телефону/OTP; реальный AI-подбор и генерация; Carbone-документы; RU+KZ; базовые уведомления.</p><div><span class="badge">Next.js</span><span class="badge">Claude</span><span class="badge">KZ-БД</span><span class="badge">Carbone</span><span class="badge">ТОО + мерчант параллельно</span></div></div>
+    </div>
+    <div class="phase">
+      <div class="pl"><div class="pn">ФАЗА 2</div><div class="pt">Портал партнёров + админ</div><div class="pd">~1.5–2 мес</div></div>
+      <div class="pc"><h4>Подрядчики, заявки, модерация</h4><p style="margin:0 0 10px">Кабинет партнёра (листинги, медиа, цены, пакеты), календарь занятости, workflow заявок (корзина → заявка → подтверждение → бронь), Refine-админка с модерацией.</p><div><span class="badge">Refine</span><span class="badge">Календарь</span><span class="badge">Модерация</span></div></div>
+    </div>
+    <div class="phase">
+      <div class="pl"><div class="pn">ФАЗА 3</div><div class="pt">Платежи + запуск</div><div class="pd">~1.5–2 мес</div></div>
+      <div class="pc"><h4>Деньги, отчётность, аналитика</h4><p style="margin:0 0 10px">ioka/Freedom Pay (депозит + комиссия + выплаты, Apple/Google Pay/QR), ИС ЭСФ и ежемесячная отчётность, аналитика (PostHog), WhatsApp/SMS, приёмка и запуск.</p><div><span class="badge">ioka</span><span class="badge">ЭСФ / отчётность</span><span class="badge">PostHog</span><span class="badge">WhatsApp BSP</span></div></div>
+    </div>
+    <div class="phase">
+      <div class="pl"><div class="pn">ФАЗА 4+</div><div class="pt">Рост</div><div class="pd">после запуска</div></div>
+      <div class="pc"><h4>Мобайл, подписки, масштаб</h4><p style="margin:0">Мобильные приложения (Capacitor → сторы); pgvector-рекомендации; подписки подрядчиков; продвижение/premium-placement; реферальная программа; масштабирование по городам РК.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 BUILD VS BUY -->
+<section id="buildbuy" class="wrap">
+  <div class="eyebrow">11 — Build vs Buy</div>
+  <h2>Что пишем сами, а что переиспользуем</h2>
+  <p class="lead">Принцип: <strong>писать сами только то, что является нашим преимуществом</strong> (AI-подбор и генерация). Всё остальное — берём готовое и экономим недели.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Компонент</th><th>Решение</th><th>Почему</th></tr></thead>
+      <tbody>
+        <tr><td>AI-интейк, подбор, генерация</td><td><b class="ok">Build</b></td><td>Это наш moat — нельзя купить.</td></tr>
+        <tr><td>Ядро маркетплейса (профили, комиссии)</td><td><b class="ok">Build</b> на Postgres+Prisma</td><td>Специфика AI + Казахстана; Sharetribe/Medusa слишком generic.</td></tr>
+        <tr><td>Календарь / бронь</td><td><b class="warn">Buy/Adapt</b> — своя таблица, далее Cal.diy</td><td>−3–4 недели; Cal.com ушёл в closed-source.</td></tr>
+        <tr><td>Админ-панель</td><td><b class="warn">Buy</b> — Refine</td><td>−2–3 недели.</td></tr>
+        <tr><td>Документы</td><td><b class="warn">Buy</b> — Carbone</td><td>Шаблоны, не код.</td></tr>
+        <tr><td>Платежи / выплаты</td><td><b class="warn">Buy</b> — ioka / Freedom Pay</td><td>KZ-специфика + лицензия PSP.</td></tr>
+        <tr><td>Уведомления / задачи</td><td><b class="warn">Buy</b> — BSP / Resend / Trigger.dev</td><td>Интеграции, не своё.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 12 BUDGET -->
+<section id="budget" class="wrap">
+  <div class="eyebrow">12 — Команда, сроки, бюджет</div>
+  <h2>Сколько это стоит и за сколько</h2>
+  <p class="lead">Команда: <strong>1–2 fullstack-разработчика</strong> (TS/React) + дизайн на полировку + DevOps на KZ-инфраструктуру. Ниже — предварительные вилки по объёму амбиции. Финальная смета — после выбора тира.</p>
+
+  <div class="grid g3" style="margin:22px 0">
+    <div class="card"><div class="pill" style="margin-bottom:12px;color:var(--dim)"><span class="d" style="background:var(--faint)"></span>Тир 1</div><h4 style="margin-top:0">Лин-MVP</h4><div class="stat" style="margin:10px 0"><div class="v">$15–25<b>k</b></div><div class="l">2–3 месяца</div></div><p style="font-size:14px;margin:0">Веб-PWA, 1 платёжка-сплит, ручная модерация подрядчиков, базовый AI-подбор и смета.</p></div>
+    <div class="card" style="border-color:rgba(44,123,255,.4);background:radial-gradient(120% 140% at 100% 0%,rgba(44,123,255,.12),transparent 55%),linear-gradient(180deg,var(--elev),var(--bg-2))"><div class="pill" style="margin-bottom:12px;color:var(--blue-2);border-color:rgba(44,123,255,.5)"><span class="d" style="background:var(--blue)"></span>Тир 2 · рекомендуем</div><h4 style="margin-top:0">Полная V1</h4><div class="stat" style="margin:10px 0"><div class="v" style="color:var(--blue-2)">$35–65<b style="color:var(--blue-3)">k</b></div><div class="l">4–6 месяцев</div></div><p style="font-size:14px;margin:0">3 стороны, реальные оплаты + комиссия 7% + выплаты, KZ-хостинг PII, RU+KZ, документы, 17 форматов, модерация, отчётность.</p></div>
+    <div class="card"><div class="pill" style="margin-bottom:12px;color:var(--violet);border-color:rgba(167,139,250,.4)"><span class="d" style="background:var(--violet)"></span>Тир 3</div><h4 style="margin-top:0">Полный продакшен</h4><div class="stat" style="margin:10px 0"><div class="v">$80–150<b>k+</b></div><div class="l">6+ месяцев</div></div><p style="font-size:14px;margin:0">Нативный мобайл, кастомные интеграции платежей, масштабирование, CRM подрядчиков.</p></div>
+  </div>
+
+  <div class="card" style="margin-top:8px">
+    <h4 style="margin-top:0">Рыночный ориентир — для калибровки</h4>
+    <p style="margin:0 0 10px">Внешние агентства за AI-маркетплейс берут существенно больше:<sup style="color:var(--blue-2)">3</sup></p>
+    <div class="grid g3" style="gap:18px">
+      <div class="stat"><div class="v">$50–150<b>k</b></div><div class="l">MVP AI-маркетплейса (3–6 мес)</div></div>
+      <div class="stat"><div class="v">$140–300<b>k+</b></div><div class="l">полная AI-платформа</div></div>
+      <div class="stat"><div class="v">$300–600<b>k</b></div><div class="l">западное агентство за V1</div></div>
+    </div>
+    <p style="margin:14px 0 0;font-size:15px">DEADLINE делает дешевле за счёт переиспользования готовых блоков (§11), ставок региона и уже готового дизайн-фундамента (Фаза 0). Раунд у инвестора обычно = смета ×1.5–2.5 (разработка + маркетинг + runway).</p>
+  </div>
+  <p class="note">Цифры бюджета — предварительные вилки для совместного решения по объёму, не финальный счёт. Исходное КП $5k относилось к <b>демо</b>, а не к полному приложению.</p>
+</section>
+
+<!-- 13 GO LIVE -->
+<section id="golive" class="wrap">
+  <div class="eyebrow">13 — Что нужно, чтобы запуститься</div>
+  <h2>Чек-лист до первого реального заказа</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">Юр. и инфраструктура (параллельно разработке)</h4>
+      <ul style="margin:0">
+        <li>Регистрация <b>ТОО</b> + БИН.</li>
+        <li>Мерчант-онбординг <b>ioka</b> (~5–10 раб. дней).</li>
+        <li><b>KZ-хостинг</b> Postgres + бэкапы в РК.</li>
+        <li>Подключение <b>WhatsApp BSP</b> (4–6 недель — начать заранее).</li>
+        <li>Юр-заключение по данным и платежам.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">Продукт</h4>
+      <ul style="margin:0">
+        <li>Реальный AI-интейк + подбор + генерация на 1 сценарии (свадьба/той) end-to-end.</li>
+        <li>Кабинет партнёра + модерация карточек.</li>
+        <li>Платёжный поток: депозит → комиссия → выплата.</li>
+        <li>ИС ЭСФ + ежемесячная отчётность.</li>
+        <li>Двуязычие RU/KZ + аналитика.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="quote" style="margin-top:30px">Критерий запуска: реальный AI собирает корректную смету (код считает), генерирует настоящие PDF/XLSX, данные лежат в KZ-БД, деньги проходят через лицензированный PSP.</p>
+</section>
+
+<!-- REFERENCES -->
+<section id="refs" class="wrap">
+  <div class="eyebrow">Источники</div>
+  <h2 style="font-size:26px">Что было проверено ресёрчем</h2>
+  <p>Ключевые факты по регуляторике, платежам и стеку проверены в июне 2026 по официальным, юридическим и отраслевым источникам.</p>
+  <ol class="refs" style="margin-top:18px">
+    <li><span class="rn">1</span>Регуляторика РК (данные, НДС 2026, отчётность платформ): <a href="https://kpmg.com/kz/en/insights/2026/02/nf-feb-3.html" target="_blank" rel="noopener">KPMG KZ — Platform reporting 2026</a>, <a href="https://taxsummaries.pwc.com/kazakhstan/corporate/other-taxes" target="_blank" rel="noopener">PwC — VAT 2026</a>, <a href="https://www.dlapiperdataprotection.com/index.html?t=law&c=KZ" target="_blank" rel="noopener">DLA Piper — Data Protection KZ</a>, <a href="https://www.akorda.kz/ru" target="_blank" rel="noopener">Akorda — новый Налоговый кодекс</a>.</li>
+    <li><span class="rn">2</span>Рынок и конкуренты РК: <a href="https://astanatimes.com/2026/03/astana-leads-marriage-rates-as-kazakhstan-registers-115900-marriages-in-2025/" target="_blank" rel="noopener">Astana Times — 115 900 браков 2025</a>, <a href="https://kz.kursiv.media/en/2025-10-14/" target="_blank" rel="noopener">Kursiv — стоимость свадьбы</a>, <a href="https://tracxn.com/d/companies/ticketonkz/" target="_blank" rel="noopener">Tracxn — Ticketon</a>.</li>
+    <li><span class="rn">3</span>Технологический стек и бенчмарки стоимости: <a href="https://ai-sdk.dev/docs/introduction" target="_blank" rel="noopener">Vercel AI SDK</a>, <a href="https://cal.com/blog/cal-diy-open-source-to-closed-source" target="_blank" rel="noopener">Cal.com → Cal.diy</a>, <a href="https://www.softermii.com/blog/for-startups/mvp-development-guide-process-costs-and-real-examples" target="_blank" rel="noopener">Softermii — MVP cost</a>, <a href="https://encore.dev/articles/pgvector-vs-pinecone" target="_blank" rel="noopener">pgvector scale</a>.</li>
+    <li><span class="rn">4</span>Платежи РК (сплит, выплаты, лицензия): <a href="https://ioka.kz/en/products/marketplaces" target="_blank" rel="noopener">ioka — Marketplace</a>, <a href="https://ioka.kz/docs/en/ioka-api/payout" target="_blank" rel="noopener">ioka — Payout API</a>, <a href="https://freedompay.kz/kz/services/split-pay" target="_blank" rel="noopener">Freedom Pay — Split</a>, <a href="https://nationalbank.kz/ru/news/uchetnaya-registraciya-platezhnoy-organizacii" target="_blank" rel="noopener">НБК — реестр платёжных организаций</a>.</li>
+  </ol>
+  <p class="note">Источники приведены для проверяемости. Перед стартом юридического и платёжного контура требуется заключение местного юриста — этот документ его не заменяет.</p>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <div>
+      <div class="brand" style="font-size:22px;margin-bottom:10px">Event<b>Ai</b></div>
+      <div class="dim">План разработки продукта · v1.0<br>Подготовил DEADLINE · Июнь 2026<br>Документ для партнёрского ревью</div>
+    </div>
+    <div class="dim" style="text-align:right">
+      Живое демо · <a href="https://deadline-corp.github.io/event-ai-demo/" target="_blank" rel="noopener">deadline-corp.github.io/event-ai-demo</a><br>
+      Рынок · Алматы → Казахстан → СНГ<br>
+      Стек · Next.js · Claude · Postgres+pgvector · ioka
+    </div>
+  </div>
+  <p class="disc">Документ носит характер плана и оценки. Цифры бюджета и сроков — предварительные ориентиры для совместного принятия решения по объёму, не публичная оферта. Факты по регуляторике и платежам Казахстана проверены по открытым источникам на июнь 2026 и не являются юридической консультацией; перед запуском требуется заключение местного юриста. © DEADLINE.</p>
+</footer>
+
+<script>
+  // progress bar
+  var prog=document.getElementById('prog');
+  function onScroll(){var h=document.documentElement;var sc=(h.scrollTop)/(h.scrollHeight-h.clientHeight);prog.style.width=(sc*100)+'%';}
+  document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  // mobile toc
+  var burger=document.getElementById('burger'),toc=document.getElementById('toc');
+  burger.addEventListener('click',function(){toc.classList.toggle('open');burger.textContent=toc.classList.contains('open')?'✕':'☰';});
+  toc.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){toc.classList.remove('open');burger.textContent='☰';});});
+  // active nav highlight
+  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  var navs={};document.querySelectorAll('.topnav a[href^="#"]').forEach(function(a){navs[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){var n=navs[e.target.id];if(!n)return;if(e.isIntersecting){Object.values(navs).forEach(function(x){x.style.color='';x.style.background='';});n.style.color='var(--txt)';n.style.background='rgba(255,255,255,.05)';}});},{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(function(s){io.observe(s);});
+</script>
+</body>
+</html>
